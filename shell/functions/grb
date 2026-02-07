@@ -1,0 +1,33 @@
+grb() {
+  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: Not in a git repository"
+    return 1
+  fi
+
+  local main_branch
+  main_branch=$(git remote show origin | grep "HEAD branch" | cut -d" " -f5)
+
+  if [[ -z "$main_branch" ]]; then
+    echo "Error: Could not determine main branch"
+    return 1
+  fi
+
+  local current_dir=$(pwd)
+  local main_worktree=$(git worktree list --porcelain | awk '/worktree/ {print $2; exit}')
+
+  if [[ "$current_dir" != "$main_worktree" ]]; then
+    local current_branch=$(git branch --show-current)
+
+    echo "==> Updating main worktree at: $main_worktree"
+    (cd "$main_worktree" && git get-latest) || return 1
+
+    echo "==> Rebasing $current_branch onto $main_branch"
+    git rebase "$main_branch" || return 1
+  else
+    git get-latest && gco - && git rebase "$main_branch" || return 1
+  fi
+
+  echo "✅ Rebase complete"
+}
+
+grb "$@"

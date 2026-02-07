@@ -1,0 +1,5 @@
+gfix() {
+  _git_branch_worktree "fix" "$@"
+}
+
+gfix "$@"

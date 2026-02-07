@@ -1,0 +1,5 @@
+gfeature() {
+  _git_branch_worktree "feat" "$@"
+}
+
+gfeature "$@"
