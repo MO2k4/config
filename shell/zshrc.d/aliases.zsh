@@ -5,8 +5,7 @@ alias cat=bat
 alias dockclean='docker system prune -f -a && docker volume rm $(docker volume ls -qf dangling=true)'
 
 # Git navigation
-alias gitroot='cd $(git rev-parse --show-toplevel)'
-alias gitrootwt='cd "$(git worktree list --porcelain | awk "/worktree/ {print \$2; exit}")"'
+alias gitroot='cd "$(git worktree list --porcelain | awk "/worktree/ {print \$2; exit}")"'
 
 # Git commands
 alias gst='git status'
