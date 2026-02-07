@@ -1,0 +1,449 @@
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
+#export ZSH="/Users/martino/.oh-my-zsh"
+export LANG="en-us.UTF-8"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# ZSH_THEME="spaceship"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment the following line to automatically update without prompting.
+# DISABLE_UPDATE_PROMPT="true"
+
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git)
+
+#source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+export LC_ALL=en_US.UTF-8  
+export LANG=en_US.UTF-8
+
+eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver_custom.omp.json)"
+#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+
+  autoload -Uz compinit
+  compinit
+fi
+
+autoload -U +X bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
+
+#source /usr/local/etc/bash_completion.d/az
+
+alias ls='lsd'
+alias ll='ls --classify --group-directories-first --long --human-readable --almost-all --blocks permission,user,size,date,name --date "+%d %b %H:%M" --size short'
+alias cat=bat
+alias dockclean='docker system prune -f -a && docker volume rm $(docker volume ls -qf dangling=true)'
+alias gitroot='cd $(git rev-parse --show-toplevel)'
+alias gitrootwt='cd "$(git worktree list --porcelain | awk "/worktree/ {print \$2; exit}")"'
+alias gst='git status'
+alias ga='git add -A'
+alias gc='git commit'
+alias gcm='git commit -a -m'
+alias gd='git diff'
+alias gdc='git diff --cached'
+alias gp='git push'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gb='git branch'
+alias gcp='git cherry-pick'
+alias gfoo='gcm "foobar"; gp'
+alias grc='GIT_EDITOR=true git rebase --continue'
+
+# Git rebase with worktree support
+grb() {
+  # Check if we're in a git repository
+  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: Not in a git repository"
+    return 1
+  fi
+
+  # Get the main branch name
+  local main_branch
+  main_branch=$(git remote show origin | grep "HEAD branch" | cut -d" " -f5)
+  
+  if [[ -z "$main_branch" ]]; then
+    echo "Error: Could not determine main branch"
+    return 1
+  fi
+
+  # Check if we're in a worktree (not the main one)
+  local current_dir=$(pwd)
+  local main_worktree=$(git worktree list --porcelain | awk '/worktree/ {print $2; exit}')
+  
+  if [[ "$current_dir" != "$main_worktree" ]]; then
+    # We're in a worktree
+    local current_branch=$(git branch --show-current)
+    
+    echo "==> Updating main worktree at: $main_worktree"
+    (cd "$main_worktree" && git get-latest) || return 1
+    
+    echo "==> Rebasing $current_branch onto $main_branch"
+    git rebase "$main_branch" || return 1
+  else
+    # We're in the main worktree, use traditional approach
+    git get-latest && gco - && git rebase "$main_branch" || return 1
+  fi
+  
+  echo "✅ Rebase complete"
+}
+
+alias cosmos=$'f() { docker run -it --rm mongo mongosh "$(az cosmosdb keys list --type connection-strings --resource-group rg-mc-$1 --name cosmos-mc-$1 --query \"connectionStrings[?description==\'Primary MongoDB Connection String\'].connectionString\" -o tsv)&socketTimeoutMS=360000&connectTimeoutMS=360000" };f'
+alias jwt_decode='jq -R "split(".") | .[0],.[1] | @base64d | fromjson" <<< $(pbpaste)'
+alias az_client1=$'f() { export AZURE_CONFIG_DIR=~/.az_client1 && (az account list-locations &>/dev/null || az login --use-device-code) };f'
+alias az_client2='f() { export AZURE_CONFIG_DIR=~/.az_client2 && (az account list-locations &>/dev/null || az login --use-device-code) };f'
+
+setopt EXTENDED_HISTORY
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_BEEP
+[[ /usr/local/bin/kubectl ]] && source <(kubectl completion zsh)
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+source ~/az.completion
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+
+# zsh parameter completion for the dotnet CLI
+
+_dotnet_zsh_complete()
+{
+  local completions=("$(dotnet complete "$words")")
+
+  # If the completion list is empty, just continue with filename selection
+  if [ -z "$completions" ]
+  then
+    _arguments '*::arguments: _normal'
+    return
+  fi
+
+  # This is not a variable assignment, don't remove spaces!
+  _values = "${(ps:\n:)completions}"
+}
+
+compdef _dotnet_zsh_complete dotnet
+
+# autoload -U history-search-end
+# zle -N history-beginning-search-backward-end history-search-end
+# zle -N history-beginning-search-forward-end history-search-end
+# bindkey "^[[A" history-beginning-search-backward-end
+# bindkey "^[[B" history-beginning-search-forward-end
+
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+eval "$(fzf --zsh)"
+export PATH=$PATH:$(go env GOPATH)/bin
+
+# Created by `pipx` on 2024-10-25 06:17:10
+export PATH="$PATH:/Users/martino/.local/bin"
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
+
+# Added by Windsurf
+export PATH="/Users/martino/.codeium/windsurf/bin:$PATH"
+export GPG_TTY=$(tty) # for gpg ssh signing
+
+# Activate lsp support for claude
+export ENABLE_LSP_TOOLS=1
+
+# Add .NET Core SDK tools
+export PATH="$PATH:/Users/martino/.dotnet/tools"
+
+# md2pdf: build HTML + PDF from Markdown using Microsoft Edge
+# Usage:
+#   md2pdf --file README.md [--outdir DIR] [--css FILE] \
+#           [--toc] [--toc-depth N] [--toc-title "Inhalt"] \
+#           [--title "Report Title"] [--subtitle "Subtitle"] \
+#           [--author "Author 1" --author "Author 2"]
+md2pdf() {
+  local in="" outdir="/tmp" css="" toc=0 toc_depth="" toc_title=""
+  local doc_title="" doc_subtitle="" 
+  local -a authors=()
+  # Parse named args
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --file|-f)       in="$2"; shift 2 ;;
+      --outdir|-o)     outdir="$2"; shift 2 ;;
+      --css)           css="$2"; shift 2 ;;
+      --toc)           toc=1; shift ;;
+      --toc-depth)     toc_depth="$2"; shift 2 ;;
+      --toc-title)     toc_title="$2"; shift 2 ;;
+      --title)         doc_title="$2"; shift 2 ;;
+      --subtitle)      doc_subtitle="$2"; shift 2 ;;
+      --author)        authors+=("$2"); shift 2 ;;
+      -h|--help)
+        echo "Usage: md2pdf --file <mdfile|basename> [--outdir DIR] [--css FILE] [--toc] [--toc-depth N] [--toc-title \"Title\"] [--title \"Title\"] [--subtitle \"Subtitle\"] [--author \"Author 1\" [--author \"Author 2\" ...]]"
+        return 0 ;;
+      *) echo "Unknown option: $1" >&2; return 1 ;;
+    esac
+  done
+  [[ -z "$in" ]] && { echo "Error: --file is required." >&2; return 1; }
+
+  local base="${in%.md}"
+  mkdir -p "$outdir" || return 1
+  local html="$outdir/$(basename "$base").html"
+  local pdf="$outdir/$(basename "$base").pdf"
+
+  # Build Pandoc args
+  local pandoc_args=(-f gfm -t html5 -s)
+  [[ -n "$css" ]] && pandoc_args+=(--css "$css")
+  if (( toc )); then
+    pandoc_args+=(--toc)
+    [[ -n "$toc_depth" ]] && pandoc_args+=(--toc-depth "$toc_depth")
+    [[ -n "$toc_title" ]] && pandoc_args+=(-V "toc-title=$toc_title")
+  fi
+
+  # Use cover+TOC template if present
+  # If a title is provided, also set pagetitle and (optionally) subtitle
+  # and ONLY THEN use the cover+TOC template (if present).
+  local tpl="$HOME/.pandoc/templates/cover-toc.html5"
+  if [[ -n "$doc_title" ]]; then
+    pandoc_args+=(-V "title=$doc_title" -M "pagetitle=$doc_title")
+    [[ -n "$doc_subtitle" ]] && pandoc_args+=(-V "subtitle=$doc_subtitle")
+    [[ -f "$tpl" ]] && pandoc_args+=(--template "$tpl")
+  fi
+
+  # Generate HTML
+  local author_args=()
+  if (( ${#authors[@]} > 0 )); then
+    # If authors were specified, use them
+    for auth in "${authors[@]}"; do
+      author_args+=(-V "author=$auth")
+    done
+  else
+    # Otherwise use git config name as fallback
+    author_args+=(-V "author=$(git config user.name 2>/dev/null || true)")
+  fi
+  
+  pandoc "$base.md" "${pandoc_args[@]}" -o "$html" \
+    "${author_args[@]}" \
+    -V date="$(date +%Y-%m-%d)" \
+    -F mermaid-filter || return 1
+
+  # Find Microsoft Edge
+  local edge=""
+  for e in \
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" \
+    "/Applications/Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta" \
+    "/Applications/Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev" \
+    "/Applications/Microsoft Edge Canary.app/Contents/MacOS/Microsoft Edge Canary" \
+    "msedge" "microsoft-edge" "microsoft-edge-stable"
+  do
+    { [[ -x "$e" ]] || command -v "$e" &>/dev/null; } && { edge="$e"; break; }
+  done
+  [[ -z "$edge" ]] && { echo "Microsoft Edge not found." >&2; return 1; }
+
+  # Print to PDF (keeps emoji color)
+  "$edge" --headless \
+    --disable-gpu \
+    --print-to-pdf="$pdf" \
+    --print-to-pdf-no-header \
+    "$html" || return 1
+
+  echo "✅ Wrote:"
+  echo "  $html"
+  echo "  $pdf"
+}
+
+# Git feature branch with worktree
+# Git branch helper with worktree (shared by gfeature and gfix)
+_git_branch_worktree() {
+  local prefix="$1" issue_number="" description="" args=()
+  shift
+  
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -i) issue_number="$2"; shift 2 ;;
+      *) args+=("$1"); shift ;;
+    esac
+  done
+  
+  description="${args[*]}"
+  [[ -z "$description" ]] && { echo "Usage: <name> [-i <issue-number>]"; return 1; }
+  ! git rev-parse --git-dir > /dev/null 2>&1 && { echo "Error: Not in a git repository"; return 1; }
+
+  local repo_root=$(git rev-parse --show-toplevel)
+  local worktree_base="$(dirname "$repo_root")/$(basename "$repo_root")-worktrees"
+  local branch="${issue_number:+${issue_number}-}${prefix}-${description}"
+  local worktree_path="$worktree_base/$branch"
+
+  mkdir -p "$worktree_base" || return 1
+  git get-latest || return 1
+  git prune-worktrees || return 1
+  git worktree add -b "$branch" "$worktree_path" || return 1
+  cd "$worktree_path" || return 1
+  echo "✅ Created and switched to worktree: $worktree_path"
+  git branch --show-current
+}
+
+gfeature() {
+  _git_branch_worktree "feat" "$@"
+}
+
+gfix() {
+  _git_branch_worktree "fix" "$@"
+}
+
+gchore() {
+  _git_branch_worktree "chore" "$@"
+}
+
+# Git worktree switcher with fzf
+gwt() {
+  # Check if we're in a git repository
+  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: Not in a git repository"
+    return 1
+  fi
+
+  local worktree
+  
+  # If a worktree name/path was provided as argument
+  if [[ -n "$1" ]]; then
+    # Try to find the worktree matching the argument (could be path or branch name)
+    worktree=$(git worktree list | awk -v search="$1" '
+      $1 ~ search || $3 ~ search { print $1; exit }
+    ')
+    
+    if [[ -z "$worktree" ]]; then
+      echo "Error: No worktree found matching '$1'"
+      return 1
+    fi
+  else
+    # Check if fzf is installed
+    if ! command -v fzf > /dev/null 2>&1; then
+      echo "Error: fzf is not installed. Install it with: brew install fzf"
+      return 1
+    fi
+
+    # Get worktree list, parse the path, and use fzf to select
+    worktree=$(git worktree list | fzf --height 40% --reverse --border \
+      --preview 'echo {} | awk "{print \$1}" | xargs git -C {} log --oneline --graph --color=always -10' \
+      --preview-window=right:50% \
+      --prompt="Select worktree: " \
+      --header="Select a git worktree to switch to" | awk '{print $1}')
+  fi
+
+  # If a worktree was selected, cd to it
+  if [[ -n "$worktree" ]]; then
+    cd "$worktree" || return 1
+    echo "Switched to worktree: $worktree"
+    # Show current branch
+    git branch --show-current
+  fi
+}
+
+# Zsh completion for gwt
+_gwt() {
+  local -a worktrees
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    # Extract worktree paths from git worktree list
+    worktrees=(${(f)"$(git worktree list | awk '{print $1}')"})
+    _describe 'worktrees' worktrees
+  fi
+}
+
+# Register the completion function
+compdef _gwt gwt
+
+eval "$(direnv hook zsh)"

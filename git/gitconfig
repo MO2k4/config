@@ -1,0 +1,63 @@
+[user]
+	name = Martin Oehlert
+	email = martin.oehlert@maibornwolff.de
+	signingKey = 49F510F5E2C5E8C6
+[pull]
+	rebase = true
+[core]
+	excludesfile = /Users/MartinO/.gitignore_global
+	autocrlf = input
+	fsmonitor = true
+	untrackedcache = true
+	sshCommand = /usr/bin/ssh
+[fetch]
+	prune = true
+[alias]
+	co = checkout
+	prune-branches = !git remote prune origin && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D
+	get-latest = !git co $(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5) && git pull -r
+	rebase-develop = !git get-latest && git checkout - && git rebase develop
+	feature = "!f() {\n  set -e\n\n  [[ -z \"$1\" ]] && echo \"Usage: git feature <name>\" && return 1\n\n  repo_root=$(git rev-parse --show-toplevel)\n  repo_name=$(basename \"$repo_root\")\n  worktree_base=\"$(dirname \"$repo_root\")/${repo_name}-worktrees\"\n  branch=\"feat/$1\"\n  worktree_path=\"$worktree_base/$branch\"\n\n  mkdir -p \"$worktree_base\"\n\n  git get-latest\n  git prune-worktrees\n\n  git worktree add -b \"$branch\" \"$worktree_path\"\n\n  cd \"$worktree_path\"\n}; f"
+	fix = "!f() {\n  set -e\n\n  [[ -z \"$1\" ]] && echo \"Usage: git fix <name>\" && return 1\n\n  repo_root=$(git rev-parse --show-toplevel)\n  repo_name=$(basename \"$repo_root\")\n  worktree_base=\"$(dirname \"$repo_root\")/${repo_name}-worktrees\"\n  branch=\"fix/$1\"\n  worktree_path=\"$worktree_base/$branch\"\n\n  mkdir -p \"$worktree_base\"\n\n  git get-latest\n  git prune-worktrees\n\n  git worktree add -b \"$branch\" \"$worktree_path\"\n\n  cd \"$worktree_path\"\n}; f"
+	cp = cherry-pick
+	cpc = cherry-pick --continue
+	cpa = cherry-pick --abort
+	cps = cherry-pick --skip
+	rb = rebase
+	rbc = rebase --continue
+	rba = rebase --abort
+	rbs = rebase --skip
+	save = stash push
+	pop = stash pop
+	apply = stash apply
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --branches
+	prune-worktrees = "!f() {\n  set -e\n\n  echo \"==> Pruning remote branches\"\n  git remote prune origin\n\n  gone_branches=$(git branch -vv | awk '\n    /\\[.*gone.*\\]/ {\n      sub(/^[*+] /,\"\",$0)\n      print $1\n    }\n  ')\n\n  if [ -z \"$gone_branches\" ]; then\n    echo \"==> No gone branches found\"\n    exit 0\n  fi\n\n  echo \"==> Removing worktrees\"\n  worktrees_to_remove=$(for b in $gone_branches; do\n    git worktree list --porcelain |\n    awk -v branch=\"refs/heads/$b\" '\n      $1==\"worktree\" { path=$2 }\n      $1==\"branch\" && $2==branch { print path }\n    '\n  done | sort -u)\n\n  if [ -n \"$worktrees_to_remove\" ]; then\n    echo \"$worktrees_to_remove\" | while read -r wt; do\n      git worktree remove --force \"$wt\"\n    done\n  fi\n\n  echo \"==> Pruning stale worktree metadata\"\n  git worktree prune\n\n  echo \"==> Deleting local branches\"\n  if [ -n \"$gone_branches\" ]; then\n    echo \"$gone_branches\" | while read -r branch; do\n      git branch -D \"$branch\"\n    done\n  fi\n\n  echo \"==> Done\"\n}; f"
+	prune-worktrees-dry = "!f() {\n  echo \"==> Pruning remote branches\"\n  git remote prune origin\n\n  echo \"==> Gone branches:\"\n  git branch -vv | awk '\n    /\\[.*gone.*\\]/ {\n      sub(/^[*+] /,\"\",$0)\n      print \"  branch:\", $1\n    }\n  '\n\n  echo \"==> Worktrees using gone branches:\"\n  for b in $(git branch -vv | awk '/\\[.*gone.*\\]/{sub(/^[*+] /,\"\",$0); print $1}'); do\n    git worktree list --porcelain |\n    awk -v branch=\"refs/heads/$b\" '\n      $1==\"worktree\" { path=$2 }\n      $1==\"branch\" && $2==branch { print \"  worktree:\", path }\n    '\n  done\n}; f"
+[maintenance]
+	repo = REMOVED
+[rebase]
+	autoStash = true
+[push]
+	autoSetupRemote = true
+[status]
+	showuntrackedfiles = all
+[credential "https://REMOVED"]
+	provider = bitbucket
+[credential "https://REMOVED"]
+	provider = github
+
+# The contents of this file are included only for GitLab.com URLs
+[includeIf "hasconfig:remote.*.url:**REMOVED**"]
+
+# Edit this line to point to your alternative configuration file
+path = ~/.gitconfig-alt
+
+[init]
+	defaultBranch = main
+[worktree]
+	guessRemote = true
+[credential]
+	helper = 
+	helper = /usr/local/share/gcm-core/git-credential-manager
+[credential "https://dev.azure.com"]
+	useHttpPath = true
