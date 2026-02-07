@@ -1,0 +1,38 @@
+gwt() {
+  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: Not in a git repository"
+    return 1
+  fi
+
+  local worktree
+
+  if [[ -n "$1" ]]; then
+    worktree=$(git worktree list | awk -v search="$1" '
+      $1 ~ search || $3 ~ search { print $1; exit }
+    ')
+
+    if [[ -z "$worktree" ]]; then
+      echo "Error: No worktree found matching '$1'"
+      return 1
+    fi
+  else
+    if ! command -v fzf > /dev/null 2>&1; then
+      echo "Error: fzf is not installed. Install it with: brew install fzf"
+      return 1
+    fi
+
+    worktree=$(git worktree list | fzf --height 40% --reverse --border \
+      --preview 'echo {} | awk "{print \$1}" | xargs git -C {} log --oneline --graph --color=always -10' \
+      --preview-window=right:50% \
+      --prompt="Select worktree: " \
+      --header="Select a git worktree to switch to" | awk '{print $1}')
+  fi
+
+  if [[ -n "$worktree" ]]; then
+    cd "$worktree" || return 1
+    echo "Switched to worktree: $worktree"
+    git branch --show-current
+  fi
+}
+
+gwt "$@"

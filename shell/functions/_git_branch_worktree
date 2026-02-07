@@ -1,0 +1,30 @@
+_git_branch_worktree() {
+  local prefix="$1" issue_number="" description="" args=()
+  shift
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -i) issue_number="$2"; shift 2 ;;
+      *) args+=("$1"); shift ;;
+    esac
+  done
+
+  description="${args[*]}"
+  [[ -z "$description" ]] && { echo "Usage: <name> [-i <issue-number>]"; return 1; }
+  ! git rev-parse --git-dir > /dev/null 2>&1 && { echo "Error: Not in a git repository"; return 1; }
+
+  local repo_root=$(git rev-parse --show-toplevel)
+  local worktree_base="$(dirname "$repo_root")/$(basename "$repo_root")-worktrees"
+  local branch="${issue_number:+${issue_number}-}${prefix}-${description}"
+  local worktree_path="$worktree_base/$branch"
+
+  mkdir -p "$worktree_base" || return 1
+  git get-latest || return 1
+  git prune-worktrees || return 1
+  git worktree add -b "$branch" "$worktree_path" || return 1
+  cd "$worktree_path" || return 1
+  echo "✅ Created and switched to worktree: $worktree_path"
+  git branch --show-current
+}
+
+_git_branch_worktree "$@"

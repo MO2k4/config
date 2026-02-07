@@ -1,0 +1,9 @@
+_gwt() {
+  local -a worktrees
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    worktrees=(${(f)"$(git worktree list | awk '{print $1}')"})
+    _describe 'worktrees' worktrees
+  fi
+}
+
+_gwt "$@"

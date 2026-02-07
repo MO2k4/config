@@ -1,0 +1,5 @@
+gchore() {
+  _git_branch_worktree "chore" "$@"
+}
+
+gchore "$@"

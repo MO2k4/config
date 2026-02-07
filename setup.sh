@@ -26,6 +26,8 @@ link "shell/zshrc"      "$HOME/.zshrc"
 link "shell/zshenv"     "$HOME/.zshenv"
 link "shell/zprofile"   "$HOME/.zprofile"
 link "shell/bashrc"     "$HOME/.bashrc"
+link "shell/zshrc.d"    "$HOME/.zshrc.d"
+link "shell/functions"  "$HOME/.zsh-functions"
 
 # Git
 link "git/gitconfig"      "$HOME/.gitconfig"

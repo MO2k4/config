@@ -1,0 +1,81 @@
+md2pdf() {
+  local in="" outdir="/tmp" css="" toc=0 toc_depth="" toc_title=""
+  local doc_title="" doc_subtitle=""
+  local -a authors=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --file|-f)       in="$2"; shift 2 ;;
+      --outdir|-o)     outdir="$2"; shift 2 ;;
+      --css)           css="$2"; shift 2 ;;
+      --toc)           toc=1; shift ;;
+      --toc-depth)     toc_depth="$2"; shift 2 ;;
+      --toc-title)     toc_title="$2"; shift 2 ;;
+      --title)         doc_title="$2"; shift 2 ;;
+      --subtitle)      doc_subtitle="$2"; shift 2 ;;
+      --author)        authors+=("$2"); shift 2 ;;
+      -h|--help)
+        echo "Usage: md2pdf --file <mdfile|basename> [--outdir DIR] [--css FILE] [--toc] [--toc-depth N] [--toc-title \"Title\"] [--title \"Title\"] [--subtitle \"Subtitle\"] [--author \"Author 1\" [--author \"Author 2\" ...]]"
+        return 0 ;;
+      *) echo "Unknown option: $1" >&2; return 1 ;;
+    esac
+  done
+  [[ -z "$in" ]] && { echo "Error: --file is required." >&2; return 1; }
+
+  local base="${in%.md}"
+  mkdir -p "$outdir" || return 1
+  local html="$outdir/$(basename "$base").html"
+  local pdf="$outdir/$(basename "$base").pdf"
+
+  local pandoc_args=(-f gfm -t html5 -s)
+  [[ -n "$css" ]] && pandoc_args+=(--css "$css")
+  if (( toc )); then
+    pandoc_args+=(--toc)
+    [[ -n "$toc_depth" ]] && pandoc_args+=(--toc-depth "$toc_depth")
+    [[ -n "$toc_title" ]] && pandoc_args+=(-V "toc-title=$toc_title")
+  fi
+
+  local tpl="$HOME/.pandoc/templates/cover-toc.html5"
+  if [[ -n "$doc_title" ]]; then
+    pandoc_args+=(-V "title=$doc_title" -M "pagetitle=$doc_title")
+    [[ -n "$doc_subtitle" ]] && pandoc_args+=(-V "subtitle=$doc_subtitle")
+    [[ -f "$tpl" ]] && pandoc_args+=(--template "$tpl")
+  fi
+
+  local author_args=()
+  if (( ${#authors[@]} > 0 )); then
+    for auth in "${authors[@]}"; do
+      author_args+=(-V "author=$auth")
+    done
+  else
+    author_args+=(-V "author=$(git config user.name 2>/dev/null || true)")
+  fi
+
+  pandoc "$base.md" "${pandoc_args[@]}" -o "$html" \
+    "${author_args[@]}" \
+    -V date="$(date +%Y-%m-%d)" \
+    -F mermaid-filter || return 1
+
+  local edge=""
+  for e in \
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" \
+    "/Applications/Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta" \
+    "/Applications/Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev" \
+    "/Applications/Microsoft Edge Canary.app/Contents/MacOS/Microsoft Edge Canary" \
+    "msedge" "microsoft-edge" "microsoft-edge-stable"
+  do
+    { [[ -x "$e" ]] || command -v "$e" &>/dev/null; } && { edge="$e"; break; }
+  done
+  [[ -z "$edge" ]] && { echo "Microsoft Edge not found." >&2; return 1; }
+
+  "$edge" --headless \
+    --disable-gpu \
+    --print-to-pdf="$pdf" \
+    --print-to-pdf-no-header \
+    "$html" || return 1
+
+  echo "✅ Wrote:"
+  echo "  $html"
+  echo "  $pdf"
+}
+
+md2pdf "$@"
