@@ -1,12 +1,29 @@
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew (hardcoded for /opt/homebrew — regenerate with: brew shellenv)
+export HOMEBREW_PREFIX="/opt/homebrew"
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+export HOMEBREW_REPOSITORY="/opt/homebrew"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+[ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}"
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 
 # JetBrains Toolbox
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
 # Go
-export PATH="$PATH:$(go env GOPATH)/bin"
+export GOPATH="$HOME/go"
+export PATH="$PATH:$GOPATH/bin"
 
-# NVM
+# NVM (lazy-loaded for fast startup)
 export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+
+_nvm_lazy_load() {
+  unfunction nvm node npm npx corepack 2>/dev/null
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+}
+
+nvm()      { _nvm_lazy_load; nvm "$@" }
+node()     { _nvm_lazy_load; node "$@" }
+npm()      { _nvm_lazy_load; npm "$@" }
+npx()      { _nvm_lazy_load; npx "$@" }
+corepack() { _nvm_lazy_load; corepack "$@" }

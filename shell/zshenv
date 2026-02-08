@@ -11,4 +11,4 @@ export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 export PATH="$PATH:$HOME/.dotnet/tools"
 
 # Cargo
-. "$HOME/.cargo/env"
+export PATH="$HOME/.cargo/bin:$PATH"
