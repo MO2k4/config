@@ -20,6 +20,7 @@ Brewfile          → Homebrew packages (brews, casks, vscode extensions, go/car
 shell/            → zshrc, zshenv, zprofile, bashrc  →  ~/.<file>
 git/              → gitconfig, gitconfig-alt          →  ~/.<file>
 vim/              → vimrc                             →  ~/.<file>
+mise/             → config.toml                       →  ~/.config/mise/config.toml
 prompt/           → Oh-my-posh themes, az.completion  →  ~/<file> or ~/.<dir>/<file>
 ```
 
