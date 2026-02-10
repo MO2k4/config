@@ -24,3 +24,31 @@ endif
 
 " Color scheme.
 silent! colorscheme nightfox
+
+" Line numbers.
+set number
+
+" Search.
+set hlsearch
+set ignorecase
+set smartcase
+
+" Indentation (2-space, spaces not tabs).
+set expandtab
+set shiftwidth=2
+set tabstop=2
+set smartindent
+
+" Splits open below and to the right.
+set splitbelow
+set splitright
+
+" Persistent undo across sessions.
+set undofile
+set undodir=~/.vim/undodir
+
+" Highlight current line.
+set cursorline
+
+" Use system clipboard.
+set clipboard=unnamedplus
