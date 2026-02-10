@@ -52,7 +52,7 @@ if (( $#zcompdump_stale )); then
 else
   compinit -C
 fi
-{ zcompile ~/.zcompdump } &!
+{ zcompile ~/.zcompdump 2>/dev/null } &!
 
 autoload -U +X bashcompinit && bashcompinit
 
