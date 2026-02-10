@@ -1,0 +1,7 @@
+[tools]
+node = "22"
+go = "1.24"
+python = "3.13"
+
+[settings]
+idiomatic_version_file = true

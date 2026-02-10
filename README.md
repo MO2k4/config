@@ -16,6 +16,7 @@ My macOS configuration files, managed with symlinks.
 | `prompt/claude.omp.json` | `~/claude.omp.json` |
 | `prompt/poshthemes/craver_custom.omp.json` | `~/.poshthemes/craver_custom.omp.json` |
 | `prompt/az.completion` | `~/az.completion` |
+| `mise/config.toml` | `~/.config/mise/config.toml` |
 
 ## Quick start
 

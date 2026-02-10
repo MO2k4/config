@@ -13,17 +13,5 @@ export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 
-# NVM (lazy-loaded for fast startup)
-export NVM_DIR="$HOME/.nvm"
-
-_nvm_lazy_load() {
-  unfunction nvm node npm npx corepack 2>/dev/null
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-}
-
-nvm()      { _nvm_lazy_load; nvm "$@" }
-node()     { _nvm_lazy_load; node "$@" }
-npm()      { _nvm_lazy_load; npm "$@" }
-npx()      { _nvm_lazy_load; npx "$@" }
-corepack() { _nvm_lazy_load; corepack "$@" }
+# Mise — shims for non-interactive sessions (scripts, IDEs, cron)
+eval "$(mise activate zsh --shims)"

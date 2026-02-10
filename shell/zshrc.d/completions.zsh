@@ -39,6 +39,7 @@ command -v infracost &>/dev/null && _cache_fpath infracost infracost completion 
 command -v trivy     &>/dev/null && _cache_fpath trivy     trivy completion zsh
 command -v ng        &>/dev/null && _cache_fpath ng        ng completion script
 command -v yq        &>/dev/null && _cache_fpath yq        yq shell-completion zsh
+command -v mise      &>/dev/null && _cache_fpath mise      mise completion zsh
 
 # fpath: cache dir + homebrew completions
 fpath=($ZSH_COMP_CACHE /opt/homebrew/share/zsh-completions /opt/homebrew/share/zsh/site-functions $fpath)

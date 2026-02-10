@@ -36,6 +36,9 @@ link "git/gitconfig-alt"  "$HOME/.gitconfig-alt"
 # Vim
 link "vim/vimrc" "$HOME/.vimrc"
 
+# Mise (runtime version manager)
+link "mise/config.toml" "$HOME/.config/mise/config.toml"
+
 # Prompt / Oh-my-posh
 link "prompt/claude.omp.json"                        "$HOME/claude.omp.json"
 link "prompt/poshthemes/craver_custom.omp.json"      "$HOME/.poshthemes/craver_custom.omp.json"
