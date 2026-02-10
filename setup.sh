@@ -17,7 +17,7 @@ link() {
         echo "Backing up $dst → ${dst}.bak"
         mv "$dst" "${dst}.bak"
     fi
-    ln -sf "$src" "$dst"
+    ln -sfn "$src" "$dst"
     echo "Linked $dst → $src"
 }
 
@@ -47,7 +47,10 @@ link "prompt/az.completion"                          "$HOME/az.completion"
 if [ "${1:-}" = "--brew" ]; then
     if ! command -v brew &>/dev/null; then
         echo "Homebrew not found. Installing..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        tmpfile=$(mktemp)
+        curl -fSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o "$tmpfile"
+        /bin/bash "$tmpfile"
+        rm -f "$tmpfile"
     fi
     echo "Installing Homebrew packages..."
     brew bundle --file="$DOTFILES/Brewfile" --no-lock

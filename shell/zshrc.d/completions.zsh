@@ -1,6 +1,6 @@
 # Completion cache directory (doubles as fpath entry for lazy loading)
 ZSH_COMP_CACHE="$HOME/.zsh-completion-cache"
-[[ -d "$ZSH_COMP_CACHE" ]] || mkdir -p "$ZSH_COMP_CACHE"
+[[ -d "$ZSH_COMP_CACHE" ]] || mkdir -p -m 700 "$ZSH_COMP_CACHE"
 
 # Cache a completion script into fpath (NOT sourced — compinit loads lazily on first TAB).
 # Regenerates after 24h. Delete ~/.zsh-completion-cache to force refresh.
