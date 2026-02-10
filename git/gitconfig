@@ -86,3 +86,6 @@
 	signingKey = 49F510F5E2C5E8C6
 [worktree]
 	guessRemote = true
+
+[includeIf "gitdir:~/Work/github/"]
+	path = ~/.gitconfig-github

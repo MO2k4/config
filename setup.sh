@@ -30,7 +30,8 @@ link "shell/zshrc.d"    "$HOME/.zshrc.d"
 link "shell/functions"  "$HOME/.zsh-functions"
 
 # Git
-link "git/gitconfig"      "$HOME/.gitconfig"
+link "git/gitconfig"         "$HOME/.gitconfig"
+link "git/gitconfig-github"  "$HOME/.gitconfig-github"
 
 # Vim
 link "vim/vimrc" "$HOME/.vimrc"
