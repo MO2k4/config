@@ -11,7 +11,6 @@ My macOS configuration files, managed with symlinks.
 | `shell/zprofile` | `~/.zprofile` |
 | `shell/bashrc` | `~/.bashrc` |
 | `git/gitconfig` | `~/.gitconfig` |
-| `git/gitconfig-alt` | `~/.gitconfig-alt` |
 | `vim/vimrc` | `~/.vimrc` |
 | `prompt/claude.omp.json` | `~/claude.omp.json` |
 | `prompt/poshthemes/craver_custom.omp.json` | `~/.poshthemes/craver_custom.omp.json` |

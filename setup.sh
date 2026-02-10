@@ -31,7 +31,6 @@ link "shell/functions"  "$HOME/.zsh-functions"
 
 # Git
 link "git/gitconfig"      "$HOME/.gitconfig"
-link "git/gitconfig-alt"  "$HOME/.gitconfig-alt"
 
 # Vim
 link "vim/vimrc" "$HOME/.vimrc"
