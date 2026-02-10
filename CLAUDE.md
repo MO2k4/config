@@ -17,8 +17,8 @@ A symlink-based dotfiles repository for macOS/zsh. Files are stored without dot 
 ```
 setup.sh          → Idempotent symlink installer (bash, ln -sf)
 Brewfile          → Homebrew packages (brews, casks, vscode extensions, go/cargo)
-shell/            → zshrc, zshenv, zprofile, bashrc  →  ~/.<file>
-git/              → gitconfig, gitconfig-alt          →  ~/.<file>
+shell/            → zshrc, zshenv, zprofile, bashrc   →  ~/.<file>
+git/              → gitconfig                         →  ~/.<file>
 vim/              → vimrc                             →  ~/.<file>
 mise/             → config.toml                       →  ~/.config/mise/config.toml
 prompt/           → Oh-my-posh themes, az.completion  →  ~/<file> or ~/.<dir>/<file>

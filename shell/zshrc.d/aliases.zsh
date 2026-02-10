@@ -25,5 +25,3 @@ alias grc='GIT_EDITOR=true git rebase --continue'
 # Azure
 alias cosmos=$'f() { docker run -it --rm mongo mongosh "$(az cosmosdb keys list --type connection-strings --resource-group rg-mc-$1 --name cosmos-mc-$1 --query \"connectionStrings[?description==\'Primary MongoDB Connection String\'].connectionString\" -o tsv)&socketTimeoutMS=360000&connectTimeoutMS=360000" };f'
 alias jwt_decode='jq -R "split(".") | .[0],.[1] | @base64d | fromjson" <<< $(pbpaste)'
-alias az_client1=$'f() { export AZURE_CONFIG_DIR=~/.az_client1 && (az account list-locations &>/dev/null || az login --use-device-code) };f'
-alias az_client2='f() { export AZURE_CONFIG_DIR=~/.az_client2 && (az account list-locations &>/dev/null || az login --use-device-code) };f'
