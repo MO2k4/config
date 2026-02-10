@@ -2,7 +2,7 @@
 alias ls='lsd'
 alias ll='ls --classify --group-directories-first --long --human-readable --almost-all --blocks permission,user,size,date,name --date "+%d %b %H:%M" --size short'
 alias cat=bat
-alias dockclean='docker system prune -f -a && docker volume rm $(docker volume ls -qf dangling=true)'
+alias dockclean='docker system prune -f -a && { vols=$(docker volume ls -qf dangling=true); [ -n "$vols" ] && docker volume rm $vols || true; }'
 
 # Git navigation
 alias gitroot='cd "$(git worktree list --porcelain | awk "/worktree/ {print \$2; exit}")"'
@@ -23,5 +23,4 @@ alias gfoo='gcm "foobar"; gp'
 alias grc='GIT_EDITOR=true git rebase --continue'
 
 # Azure
-alias cosmos=$'f() { docker run -it --rm mongo mongosh "$(az cosmosdb keys list --type connection-strings --resource-group rg-mc-$1 --name cosmos-mc-$1 --query \"connectionStrings[?description==\'Primary MongoDB Connection String\'].connectionString\" -o tsv)&socketTimeoutMS=360000&connectTimeoutMS=360000" };f'
 alias jwt_decode='jq -R "split(".") | .[0],.[1] | @base64d | fromjson" <<< $(pbpaste)'

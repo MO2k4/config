@@ -1,0 +1,16 @@
+cosmos() {
+  local cs tmpf
+  cs="$(az cosmosdb keys list \
+    --type connection-strings \
+    --resource-group "rg-mc-$1" \
+    --name "cosmos-mc-$1" \
+    --query "connectionStrings[?description=='Primary MongoDB Connection String'].connectionString" \
+    -o tsv)&socketTimeoutMS=360000&connectTimeoutMS=360000"
+
+  tmpf=$(mktemp)
+  printf 'MONGO_CS=%s\n' "$cs" > "$tmpf"
+  docker run -it --rm --env-file "$tmpf" mongo sh -c 'mongosh "$MONGO_CS"'
+  rm -f "$tmpf"
+}
+
+cosmos "$@"
