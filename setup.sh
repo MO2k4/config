@@ -39,6 +39,9 @@ link "vim/vimrc" "$HOME/.vimrc"
 # Mise (runtime version manager)
 link "mise/config.toml" "$HOME/.config/mise/config.toml"
 
+# iTerm2
+link "iterm2/com.googlecode.iterm2.plist" "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+
 # Prompt / Oh-my-posh
 link "prompt/claude.omp.json"                        "$HOME/claude.omp.json"
 link "prompt/poshthemes/craver_custom.omp.json"      "$HOME/.poshthemes/craver_custom.omp.json"
