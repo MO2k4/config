@@ -1,7 +1,7 @@
 [tools]
-node = "22"
-go = "1.24"
-python = "3.13"
+node = "25"
+go = "1.26"
+python = "3.14"
 
 [settings]
 idiomatic_version_file = true

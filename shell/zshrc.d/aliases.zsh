@@ -24,3 +24,10 @@ alias grc='GIT_EDITOR=true git rebase --continue'
 
 # Azure
 alias jwt_decode='jq -R "split(".") | .[0],.[1] | @base64d | fromjson" <<< $(pbpaste)'
+
+# Tools
+alias claude-mem='bun "$HOME/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'
+
+# Convenience
+alias reload='source ~/.zshrc'
+alias up='mise up && mise up --bump && mise prune && brew update && brew upgrade && brew cleanup'

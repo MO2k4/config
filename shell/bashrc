@@ -1,1 +1,3 @@
 eval "$(direnv hook bash)"
+
+alias claude-mem='bun "/Users/martino/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'
