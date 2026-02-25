@@ -6,3 +6,6 @@ autoload -Uz grb _git_branch_worktree gfeature gfix gchore gwt _gwt md2pdf _dotn
 for conf in ~/.zshrc.d/*.zsh; do
   source "$conf"
 done
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+

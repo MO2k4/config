@@ -54,6 +54,8 @@ md2pdf() {
     "${author_args[@]}" \
     -V date="$(date +%Y-%m-%d)" \
     -F mermaid-filter || return 1
+  # Remove mermaid-filter.err if created by filter (current and output directory)
+  [[ -f mermaid-filter.err ]] && rm -f mermaid-filter.err
 
   local edge=""
   for e in \
