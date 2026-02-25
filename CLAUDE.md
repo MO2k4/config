@@ -20,10 +20,14 @@ Brewfile          → Homebrew packages (brews, casks, vscode extensions, go/car
 shell/            → zshrc, zshenv, zprofile, bashrc   →  ~/.<file>
 git/              → gitconfig                         →  ~/.<file>
 vim/              → vimrc                             →  ~/.<file>
-iterm2/           → com.googlecode.iterm2.plist       →  ~/Library/Preferences/
+iterm2/           → com.googlecode.iterm2.plist       →  ~/Library/Preferences/ (copied, not symlinked)
 mise/             → config.toml                       →  ~/.config/mise/config.toml
 prompt/           → Oh-my-posh themes, az.completion  →  ~/<file> or ~/.<dir>/<file>
 ```
+
+> **Note on iTerm2:** iTerm2 is copied (not symlinked) because macOS's cfprefsd preference daemon
+> uses atomic writes that break symlinks. Run `./update-iterm2.sh` to snapshot current settings
+> back into the repo before committing.
 
 ## How setup.sh works
 

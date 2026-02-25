@@ -39,8 +39,11 @@ link "vim/vimrc" "$HOME/.vimrc"
 # Mise (runtime version manager)
 link "mise/config.toml" "$HOME/.config/mise/config.toml"
 
-# iTerm2
-# link "iterm2/com.googlecode.iterm2.plist" "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+# iTerm2 — copy, not symlink (cfprefsd atomic writes break symlinks)
+if [ ! -f "$HOME/Library/Preferences/com.googlecode.iterm2.plist" ]; then
+    cp "$DOTFILES/iterm2/com.googlecode.iterm2.plist" "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+    echo "Copied iTerm2 preferences"
+fi
 
 # Prompt / Oh-my-posh
 link "prompt/claude.omp.json"                        "$HOME/claude.omp.json"
