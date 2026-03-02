@@ -24,7 +24,7 @@ grb() {
     echo "==> Rebasing $current_branch onto $main_branch"
     git rebase "$main_branch" || return 1
   else
-    git get-latest && gco - && git rebase "$main_branch" || return 1
+    git get-latest && git checkout - && git rebase "$main_branch" || return 1
   fi
 
   echo "✅ Rebase complete"
