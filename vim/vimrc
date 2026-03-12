@@ -8,7 +8,9 @@ endif
 
 " Plugins.
 call plug#begin()
-Plug 'EdenEast/nightfox.nvim'
+if has('nvim')
+  Plug 'EdenEast/nightfox.nvim'
+endif
 call plug#end()
 
 " Sets the default vim settings.

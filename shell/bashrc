@@ -1,4 +1,4 @@
 eval "$(direnv hook bash)"
-command -v zoxide &>/dev/null && eval "$(zoxide init bash --cmd cd)"
+[[ "$CLAUDECODE" != "1" ]] && command -v zoxide &>/dev/null && eval "$(zoxide init bash --cmd cd)"
 
 alias claude-mem='bun "/Users/martino/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'
