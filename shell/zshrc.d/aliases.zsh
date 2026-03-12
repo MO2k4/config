@@ -30,4 +30,23 @@ alias claude-mem='bun "$HOME/.claude/plugins/marketplaces/thedotmack/plugin/scri
 
 # Convenience
 alias reload='source ~/.zshrc'
-alias up='mise up && mise up --bump && mise prune && brew update && brew upgrade && brew cleanup'
+
+priv() {
+  if id -Gn | grep -q '\badmin\b'; then
+    PrivilegesCLI --remove
+  else
+    PrivilegesCLI --add
+  fi
+}
+
+up() {
+  local elevated=0
+  if ! id -Gn | grep -q '\badmin\b'; then
+    PrivilegesCLI --add || return 1
+    elevated=1
+  fi
+  mise up && mise prune && brew update && brew upgrade && brew cleanup
+  local exit_code=$?
+  (( elevated )) && PrivilegesCLI --remove
+  return $exit_code
+}
