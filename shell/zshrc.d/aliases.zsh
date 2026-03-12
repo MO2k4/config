@@ -39,6 +39,7 @@ priv() {
   fi
 }
 
+unalias up 2>/dev/null
 up() {
   local elevated=0
   if ! id -Gn | grep -q '\badmin\b'; then
