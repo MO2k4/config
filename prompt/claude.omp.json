@@ -60,7 +60,7 @@
       "segments": [
         {
           "leading_diamond": "\ue0b6",
-          "template": " \udb82\udfc9 {{ .Model.DisplayName }} \uf2d0 {{ .TokenUsagePercent.Gauge }} - {{ .FormattedCost }}",
+          "template": " \udb82\udfc9 {{ .Model.DisplayName }} \uf2d0 {{ .TokenUsagePercent.String }}%",
           "foreground": "p:white",
           "background": "accent",
           "type": "claude",
