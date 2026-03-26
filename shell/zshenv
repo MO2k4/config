@@ -12,3 +12,10 @@ export PATH="$PATH:$HOME/.dotnet/tools"
 
 # Cargo
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# X11
+export PATH="/opt/X11/bin:$PATH"
+export DISPLAY=:0
+
+# Aspire CLI
+export PATH="$HOME/.aspire/bin:$PATH"
