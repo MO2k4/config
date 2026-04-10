@@ -60,7 +60,7 @@
       "segments": [
         {
           "leading_diamond": "\ue0b6",
-          "template": " \udb82\udfc9 {{ .Model.DisplayName }} \uf2d0 {{ .TokenUsagePercent.String }}%{{ if .FormattedCost }} \uf155 {{ .FormattedCost }}{{ end }}{{ if .FormattedDuration }} \uf017 {{ .FormattedDuration }}{{ end }}{{ if .FiveHourUsage }} \uf201 {{ .FiveHourUsage.String }}%{{ end }}",
+          "template": " \udb82\udfc9 {{ .Model.DisplayName }}{{ if .FiveHourUsage }} \uf201 {{ .FiveHourUsage.String }}%{{ end }} \uf2d0 {{ .TokenUsagePercent.String }}%",
           "foreground": "p:white",
           "background": "accent",
           "type": "claude",
