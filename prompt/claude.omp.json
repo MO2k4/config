@@ -60,7 +60,7 @@
       "segments": [
         {
           "leading_diamond": "\ue0b6",
-          "template": " \udb82\udfc9 {{ .Model.DisplayName }}{{ if .FiveHourUsage }} \uf201 {{ .FiveHourUsage.String }}%{{ end }} \uf2d0 {{ .TokenUsagePercent.String }}%",
+          "template": " \udb82\udfc9 {{ .Model.DisplayName }}{{ if .FiveHourUsage }} \uf201 {{ .FiveHourUsage.String }}%{{ if .RateLimits.FiveHour.ResetsAt }} \uf017 {{ secondsRound (sub .RateLimits.FiveHour.ResetsAt (unixEpoch now)) }}{{ end }}{{ end }} \uf2d0 {{ .TokenUsagePercent.String }}%",
           "foreground": "p:white",
           "background": "accent",
           "type": "claude",
