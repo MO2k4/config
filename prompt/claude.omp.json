@@ -60,11 +60,15 @@
       "segments": [
         {
           "leading_diamond": "\ue0b6",
-          "template": " \udb82\udfc9 {{ .Model.DisplayName }} \uf2d0 {{ .TokenUsagePercent.String }}%",
+          "template": " \udb82\udfc9 {{ .Model.DisplayName }} \uf2d0 {{ .TokenUsagePercent.String }}%{{ if .FormattedCost }} \uf155 {{ .FormattedCost }}{{ end }}{{ if .FormattedDuration }} \uf017 {{ .FormattedDuration }}{{ end }}{{ if .FiveHourUsage }} \uf201 {{ .FiveHourUsage.String }}%{{ end }}",
           "foreground": "p:white",
           "background": "accent",
           "type": "claude",
-          "style": "diamond"
+          "style": "diamond",
+          "foreground_templates": [
+            "{{ if gt (int .FiveHourUsage) 80 }}p:red{{ end }}",
+            "{{ if gt (int .TokenUsagePercent) 80 }}p:yellow{{ end }}"
+          ]
         }
       ]
     }
