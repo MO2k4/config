@@ -17,7 +17,7 @@
       "alignment": "left",
       "segments": [
         {
-          "template": "{{ if .Env.AICTX_CURRENT }} \udb80\udc65 {{ .Env.AICTX_CURRENT }} {{ end }}",
+          "template": "{{ if .Env.AICTX_CURRENT }} \ueb44 {{ .Env.AICTX_CURRENT }} {{ end }}",
           "foreground": "p:white",
           "leading_diamond": "\ue0b6",
           "background": "p:red",
