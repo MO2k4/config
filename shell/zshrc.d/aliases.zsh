@@ -31,6 +31,15 @@ alias claude-mem='bun "$HOME/.claude/plugins/marketplaces/thedotmack/plugin/scri
 # Convenience
 alias reload='source ~/.zshrc'
 
+gpa() {
+  for dir in */; do
+    if git -C "$dir" rev-parse --git-dir &>/dev/null; then
+      echo "→ ${dir%/}"
+      git -C "$dir" pull
+    fi
+  done
+}
+
 priv() {
   if id -Gn | grep -q '\badmin\b'; then
     PrivilegesCLI --remove
