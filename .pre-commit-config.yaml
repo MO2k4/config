@@ -40,6 +40,15 @@ repos:
 
   - repo: local
     hooks:
+      - id: zsh-syntax-check
+        name: zsh -n syntax check
+        # zsh -n only parses its FIRST file argument (the rest become positional
+        # params), so loop to syntax-check every file pre-commit passes.
+        entry: zsh -c 'for f in "$@"; do zsh -n "$f" || exit 1; done' zsh-syntax-check
+        language: system
+        files: ^shell/(zshrc|zshenv|zprofile|functions/|zshrc\.d/.*\.zsh)
+        pass_filenames: true
+
       - id: signoff
         name: Append Signed-off-by (DCO)
         entry: git/hooks/prepare-commit-msg
