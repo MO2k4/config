@@ -1,0 +1,7 @@
+# Known false positives: the canonical AWS *example* secret key
+# (wJalrXUtnFEMI/K7MDENG...) appears verbatim inside these planning docs as
+# documentation of the gitleaks regression test. It is not a live credential.
+# Allowlisted by fingerprint so live secrets elsewhere (incl. the repo-root
+# leak-test.txt used in the verification step) are still caught.
+docs/superpowers/plans/2026-06-11-gitleaks-precommit.md:generic-api-key:464
+docs/superpowers/plans/2026-06-11-pre-commit-checks.md:generic-api-key:633
