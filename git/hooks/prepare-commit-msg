@@ -8,7 +8,7 @@ COMMIT_MSG_FILE="$1"
 COMMIT_SOURCE="${2:-${PRE_COMMIT_COMMIT_MSG_SOURCE:-}}"
 
 case "$COMMIT_SOURCE" in
-    merge|squash) exit 0 ;;
+    merge | squash) exit 0 ;;
 esac
 
 if grep -qE "^Signed-off-by: " "$COMMIT_MSG_FILE"; then
@@ -22,4 +22,4 @@ if [ -z "$NAME" ] || [ -z "$EMAIL" ]; then
     exit 0
 fi
 
-printf '\nSigned-off-by: %s <%s>\n' "$NAME" "$EMAIL" >> "$COMMIT_MSG_FILE"
+printf '\nSigned-off-by: %s <%s>\n' "$NAME" "$EMAIL" >>"$COMMIT_MSG_FILE"

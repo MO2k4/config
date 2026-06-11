@@ -22,16 +22,16 @@ link() {
 }
 
 # Shell
-link "shell/zshrc"      "$HOME/.zshrc"
-link "shell/zshenv"     "$HOME/.zshenv"
-link "shell/zprofile"   "$HOME/.zprofile"
-link "shell/bashrc"     "$HOME/.bashrc"
-link "shell/zshrc.d"    "$HOME/.zshrc.d"
-link "shell/functions"  "$HOME/.zsh-functions"
+link "shell/zshrc" "$HOME/.zshrc"
+link "shell/zshenv" "$HOME/.zshenv"
+link "shell/zprofile" "$HOME/.zprofile"
+link "shell/bashrc" "$HOME/.bashrc"
+link "shell/zshrc.d" "$HOME/.zshrc.d"
+link "shell/functions" "$HOME/.zsh-functions"
 
 # Git
-link "git/gitconfig"         "$HOME/.gitconfig"
-link "git/gitconfig-github"  "$HOME/.gitconfig-github"
+link "git/gitconfig" "$HOME/.gitconfig"
+link "git/gitconfig-github" "$HOME/.gitconfig-github"
 
 # Vim
 link "vim/vimrc" "$HOME/.vimrc"
@@ -46,9 +46,9 @@ if [ ! -f "$HOME/Library/Preferences/com.googlecode.iterm2.plist" ]; then
 fi
 
 # Prompt / Oh-my-posh
-link "prompt/claude.omp.json"                        "$HOME/claude.omp.json"
-link "prompt/poshthemes/craver_custom.omp.json"      "$HOME/.poshthemes/craver_custom.omp.json"
-link "prompt/az.completion"                          "$HOME/az.completion"
+link "prompt/claude.omp.json" "$HOME/claude.omp.json"
+link "prompt/poshthemes/craver_custom.omp.json" "$HOME/.poshthemes/craver_custom.omp.json"
+link "prompt/az.completion" "$HOME/az.completion"
 
 # Homebrew
 if [ "${1:-}" = "--brew" ]; then
