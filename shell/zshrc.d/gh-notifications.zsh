@@ -19,7 +19,7 @@ ghdone() {
   local filter='.subject.type=="PullRequest"'
   [[ -n "$repo" ]] && filter+=" and .repository.full_name==\"$repo\""
 
-  gh api 'notifications?all=true' --paginate \
+  gh api notifications --paginate \
     --jq ".[] | select($filter) | [.id, .subject.url, .repository.full_name] | @tsv" \
   | while IFS=$'\t' read -r tid url full; do
       [[ "$(gh api "$url" --jq '.merged' 2>/dev/null)" == "true" ]] || continue
