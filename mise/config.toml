@@ -5,3 +5,6 @@ python = "3.14"
 
 [settings]
 idiomatic_version_file = true
+trusted_config_paths = [
+  "/Users/martino/Work/ais/poc-app",
+]

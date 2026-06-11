@@ -62,7 +62,6 @@ command -v packer    &>/dev/null && complete -o nospace -C packer packer
 
 # Other tools
 [ -f ~/az.completion ] && source ~/az.completion
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # Custom completions
 compdef _dotnet_zsh_complete dotnet
