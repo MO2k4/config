@@ -14,7 +14,7 @@ A symlink-based dotfiles repository for macOS/zsh. Files are stored without dot 
 
 ## Architecture
 
-```
+```text
 setup.sh          → Idempotent symlink installer (bash, ln -sf)
 Brewfile          → Homebrew packages (brews, casks, vscode extensions, go/cargo)
 shell/            → zshrc, zshenv, zprofile, bashrc   →  ~/.<file>
@@ -32,6 +32,7 @@ prompt/           → Oh-my-posh themes, az.completion  →  ~/<file> or ~/.<dir
 ## How setup.sh works
 
 The `link()` function handles three cases:
+
 1. **Symlink already correct** → skip (prints "OK")
 2. **Real file exists** → back up to `<file>.bak`, then symlink
 3. **Nothing exists** → create symlink directly

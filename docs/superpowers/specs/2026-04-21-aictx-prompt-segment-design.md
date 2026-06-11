@@ -43,7 +43,7 @@ Change the path segment's `leading_diamond` from `"\ue0b6"` to `"<parentBackgrou
 
 ## Segment order after change
 
-```
+```text
 [󰙅 ifm] [path] [git] [claude model] [claude usage]
    red    orange  green    accent        blue
 ```

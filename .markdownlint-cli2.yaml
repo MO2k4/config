@@ -1,0 +1,13 @@
+# markdownlint-cli2 configuration for this dotfiles repo.
+# All rules stay on except these, disabled for machine-generated docs:
+config:
+  MD013: false  # line length — generated prose has long lines
+  MD033: false  # inline HTML — specs use <details>, <br>, etc.
+  MD024: false  # duplicate headings — plans repeat headings across tasks
+  MD060: false  # table pipe spacing — repo uses compact |---| tables by design
+
+# Superpowers planning artifacts are machine-generated process docs full of
+# example fences and repeated headings; their violations are intentionally
+# out of scope (specs/ are still linted).
+ignores:
+  - "docs/superpowers/plans/**"
