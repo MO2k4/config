@@ -5,6 +5,7 @@ repos:
     rev: v8.30.1
     hooks:
       - id: gitleaks
+        stages: [pre-commit]
 
   - repo: local
     hooks:
@@ -14,4 +15,7 @@ repos:
         language: script
         stages: [prepare-commit-msg]
         always_run: true
-        pass_filenames: false
+        # pre-commit passes the commit-message file as the single "filename"
+        # for prepare-commit-msg hooks, so pass_filenames MUST be true for the
+        # script to receive it as $1 (false suppresses it).
+        pass_filenames: true

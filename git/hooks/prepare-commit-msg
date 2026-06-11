@@ -3,7 +3,9 @@
 # Skips merges, squashes, and messages that already contain a sign-off.
 
 COMMIT_MSG_FILE="$1"
-COMMIT_SOURCE="$2"
+# When run directly by git, the source is $2. Under the pre-commit framework it
+# is exposed as PRE_COMMIT_COMMIT_MSG_SOURCE instead, so fall back to that.
+COMMIT_SOURCE="${2:-${PRE_COMMIT_COMMIT_MSG_SOURCE:-}}"
 
 case "$COMMIT_SOURCE" in
     merge|squash) exit 0 ;;
