@@ -21,10 +21,12 @@ HOOKS_DIR="$(git rev-parse --absolute-git-dir)/hooks"
 git config --local core.hooksPath "$HOOKS_DIR"
 echo "Set local core.hooksPath → $HOOKS_DIR"
 
-# pre-commit refuses to install while core.hooksPath is set, UNLESS an explicit
-# --git-dir is passed (which skips that guard). Install both hook types.
-pre-commit install \
-    --git-dir "$(git rev-parse --git-dir)" \
+# pre-commit's `install` refuses to run while core.hooksPath is set, and modern
+# pre-commit (4.x) dropped the old `install --git-dir` bypass. `init-templatedir`
+# installs the dispatchers with an explicit git-dir (which skips that guard) and
+# writes them straight into this repo's .git/hooks. The "init.templateDir" warning
+# it prints is expected and harmless — we are NOT configuring a global template dir.
+pre-commit init-templatedir "$(git rev-parse --git-dir)" \
     -t pre-commit \
     -t prepare-commit-msg
 
