@@ -47,6 +47,7 @@ up() {
 ```
 
 Changes from the current alias:
+
 - Removed `mise up --bump` (major version bumps, too aggressive for routine updates)
 - Added auto-privilege management: request admin if not already elevated, revoke only if elevated by this function
 - Preserves the caller's existing admin state — if they ran `priv` manually before `up`, they keep admin rights after
