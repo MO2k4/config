@@ -1,0 +1,17 @@
+default_install_hook_types: [pre-commit, prepare-commit-msg]
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: local
+    hooks:
+      - id: signoff
+        name: Append Signed-off-by (DCO)
+        entry: git/hooks/prepare-commit-msg
+        language: script
+        stages: [prepare-commit-msg]
+        always_run: true
+        pass_filenames: false
