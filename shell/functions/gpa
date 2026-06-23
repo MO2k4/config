@@ -1,0 +1,52 @@
+gpa() {
+  local root="${1:-.}"
+  local updated=0 uptodate=0 skipped=0 failed=0
+
+  for dir in "$root"/*/(N); do
+    git -C "$dir" rev-parse --git-dir &>/dev/null || continue
+    local name=${${dir%/}:t}
+
+    # 1. Skip dirty working trees
+    if [[ -n "$(git -C "$dir" status --porcelain)" ]]; then
+      print -r -- "⊘ $name  skipped (uncommitted changes)"
+      ((skipped++)); continue
+    fi
+
+    # 2. Determine current and default branch (offline-first)
+    local cur def
+    cur=$(git -C "$dir" symbolic-ref --short HEAD 2>/dev/null)
+    def=$(git -C "$dir" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)
+    def=${def#origin/}
+    if [[ -z "$def" ]]; then
+      def=$(git -C "$dir" remote show origin 2>/dev/null | awk '/HEAD branch/{print $NF}')
+    fi
+
+    # Skip repos not on their default branch
+    if [[ -n "$def" && "$cur" != "$def" ]]; then
+      print -r -- "⊘ $name  skipped (on $cur, not $def)"
+      ((skipped++)); continue
+    fi
+
+    # 3. Clean and on default -> rebase-pull quietly
+    local before after
+    before=$(git -C "$dir" rev-parse HEAD)
+    if git -C "$dir" pull --rebase --quiet 2>/dev/null; then
+      after=$(git -C "$dir" rev-parse HEAD)
+      if [[ "$before" == "$after" ]]; then
+        print -r -- "= $name  up to date"
+        ((uptodate++))
+      else
+        local n=$(git -C "$dir" rev-list --count "$before..$after")
+        print -r -- "✓ $name  $n new commit(s)"
+        ((updated++))
+      fi
+    else
+      print -r -- "✗ $name  pull failed"
+      ((failed++))
+    fi
+  done
+
+  print -r -- "— $updated updated, $uptodate up-to-date, $skipped skipped, $failed failed"
+}
+
+gpa "$@"
