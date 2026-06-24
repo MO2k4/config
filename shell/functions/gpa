@@ -1,4 +1,17 @@
 gpa() {
+  # --autostash / -s: pull dirty repos too, stashing local changes around the
+  # rebase and restoring them after. Off by default — the safe behavior is to
+  # leave working trees untouched.
+  local autostash=0
+  while [[ "${1:-}" == -* ]]; do
+    case "$1" in
+      -s|--autostash) autostash=1 ;;
+      --) shift; break ;;
+      *) print -r -- "gpa: unknown option: $1"; return 2 ;;
+    esac
+    shift
+  done
+
   local root="${1:-.}"
   local updated=0 uptodate=0 skipped=0 failed=0
 
@@ -6,10 +19,14 @@ gpa() {
     git -C "$dir" rev-parse --git-dir &>/dev/null || continue
     local name=${${dir%/}:t}
 
-    # 1. Skip dirty working trees
+    # 1. Dirty working tree: skip unless --autostash lets us stash around it.
+    local dirty=0
     if [[ -n "$(git -C "$dir" status --porcelain)" ]]; then
-      print -r -- "⊘ $name  skipped (uncommitted changes)"
-      ((skipped++)); continue
+      if (( ! autostash )); then
+        print -r -- "⊘ $name  skipped (uncommitted changes)"
+        ((skipped++)); continue
+      fi
+      dirty=1
     fi
 
     # 2. Determine current and default branch (offline-first)
@@ -27,22 +44,37 @@ gpa() {
       ((skipped++)); continue
     fi
 
-    # 3. Clean and on default -> rebase-pull quietly
-    local before after
+    # 3. On default branch -> rebase-pull quietly (auto-stashing if dirty).
+    local before after pullrc
     before=$(git -C "$dir" rev-parse HEAD)
-    if git -C "$dir" pull --rebase --quiet 2>/dev/null; then
-      after=$(git -C "$dir" rev-parse HEAD)
-      if [[ "$before" == "$after" ]]; then
-        print -r -- "= $name  up to date"
-        ((uptodate++))
-      else
-        local n=$(git -C "$dir" rev-list --count "$before..$after")
-        print -r -- "✓ $name  $n new commit(s)"
-        ((updated++))
-      fi
+    if (( dirty )); then
+      git -C "$dir" pull --rebase --autostash --quiet 2>/dev/null
     else
+      git -C "$dir" pull --rebase --quiet 2>/dev/null
+    fi
+    pullrc=$?
+
+    # An autostash (or rebase) that can't reapply cleanly leaves unmerged paths
+    # behind. Surface it loudly rather than reporting a misleading success.
+    if [[ -n "$(git -C "$dir" ls-files --unmerged)" ]]; then
+      print -r -- "✗ $name  autostash conflict — resolve manually"
+      ((failed++)); continue
+    fi
+    if (( pullrc != 0 )); then
       print -r -- "✗ $name  pull failed"
-      ((failed++))
+      ((failed++)); continue
+    fi
+
+    after=$(git -C "$dir" rev-parse HEAD)
+    if [[ "$before" == "$after" ]]; then
+      print -r -- "= $name  up to date"
+      ((uptodate++))
+    else
+      local n=$(git -C "$dir" rev-list --count "$before..$after")
+      local note=""
+      (( dirty )) && note="  (local changes preserved)"
+      print -r -- "✓ $name  $n new commit(s)$note"
+      ((updated++))
     fi
   done
 

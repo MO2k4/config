@@ -44,7 +44,9 @@ trap cleanup EXIT
 git init -q -b main --bare "$TMP/upstream.git"
 git clone -q "$TMP/upstream.git" "$TMP/seed"
 print v1 > "$TMP/seed/f"
-git -C "$TMP/seed" add f
+print g1 > "$TMP/seed/g"   # extra files used by the --autostash tests below
+print h1 > "$TMP/seed/h"
+git -C "$TMP/seed" add f g h
 git -C "$TMP/seed" commit -qm c1
 git -C "$TMP/seed" push -q -u origin main
 
@@ -60,6 +62,17 @@ mkclone billing      # dirty working tree -> skipped
 mkclone infra        # on a feature branch -> skipped
 mkclone legacy       # broken remote -> pull fails
 mkdir "$WORK/plain"  # not a git repo -> silently ignored
+
+# Behind-the-remote clones for the --autostash tests, kept in their own roots
+# so the multi-repo sweep above never touches them. Cloned now, while upstream
+# is still at c1, so they lag the commits pushed just below.
+ASTASH="$TMP/astash"; mkdir -p "$ASTASH"
+git clone -q "$TMP/upstream.git" "$ASTASH/mobile"
+git -C "$ASTASH/mobile" symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
+
+CONFLICT="$TMP/conflict"; mkdir -p "$CONFLICT"
+git clone -q "$TMP/upstream.git" "$CONFLICT/desktop"
+git -C "$CONFLICT/desktop" symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
 
 # Advance the remote by two commits, then bring `web` (only) current.
 print v2 >> "$TMP/seed/f"; git -C "$TMP/seed" commit -qam c2
@@ -103,6 +116,39 @@ check "empty root summary" "— 0 updated, 0 up-to-date, 0 skipped, 0 failed" "$
 # === Test D: no argument defaults to the current directory ===
 outD=$( cd "$WORK" && gpa )
 check "default root is cwd" "= web  up to date" "$outD"
+
+# === Test E: --autostash pulls over a dirty tree and restores local work ===
+# mobile lags by c2/c3 (both touch only `f`); the dirty edit is to `g`, so the
+# stash reapplies cleanly after the rebase.
+print local-change >> "$ASTASH/mobile/g"
+outE=$(gpa --autostash "$ASTASH")
+check "autostash repo updates"        "✓ mobile"                "$outE"
+check "autostash notes preserved"     "(local changes preserved)" "$outE"
+check "autostash restored local edit" "local-change"            "$(cat "$ASTASH/mobile/g")"
+
+# Without the flag, the same dirty tree is still skipped (safe default).
+print more >> "$ASTASH/mobile/g"
+outE2=$(gpa "$ASTASH")
+check "dirty still skipped by default" "⊘ mobile  skipped (uncommitted changes)" "$outE2"
+
+# === Test F: --autostash surfaces a stash-pop conflict instead of hiding it ===
+# Advance the remote on `h`, then make a diverging local edit to the same file
+# so the autostash pop cannot apply cleanly.
+print h-upstream > "$TMP/seed/h"; git -C "$TMP/seed" commit -qam c4
+git -C "$TMP/seed" push -q
+print h-local > "$CONFLICT/desktop/h"
+outF=$(gpa --autostash "$CONFLICT")
+check "autostash conflict reported" "✗ desktop  autostash conflict" "$outF"
+check "autostash conflict counted"  "1 failed"                      "$outF"
+
+# === Test G: unknown option is rejected ===
+outG=$(gpa --bogus "$WORK" 2>&1); rcG=$?
+check "unknown option message" "unknown option: --bogus" "$outG"
+if (( rcG == 2 )); then
+  print -r -- "ok   - unknown option exits 2"
+else
+  print -r -- "FAIL - unknown option exit code was $rcG, expected 2"; (( FAILS++ ))
+fi
 
 # --- result ----------------------------------------------------------------
 print -r --
