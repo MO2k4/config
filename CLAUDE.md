@@ -22,6 +22,7 @@ git/              → gitconfig                         →  ~/.<file>
 vim/              → vimrc                             →  ~/.<file>
 iterm2/           → com.googlecode.iterm2.plist       →  ~/Library/Preferences/ (copied, not symlinked)
 mise/             → config.toml                       →  ~/.config/mise/config.toml
+ghostty/          → config                            →  ~/Library/Application Support/com.mitchellh.ghostty/config
 prompt/           → Oh-my-posh themes, az.completion  →  ~/<file> or ~/.<dir>/<file>
 ```
 
