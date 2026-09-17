@@ -8,3 +8,10 @@ for conf in ~/.zshrc.d/*.zsh; do
 done
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+# >>> dotnet-mise-migrate >>>
+# GUI apps (VS Code from the Dock, etc.) don't inherit the mise shim PATH,
+# and /etc/paths.d/dotnet is gone, so point them at the mise root directly.
+export DOTNET_ROOT="/Users/martino/.local/share/mise/dotnet-root"
+# <<< dotnet-mise-migrate <<<
