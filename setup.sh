@@ -39,6 +39,9 @@ link "vim/vimrc" "$HOME/.vimrc"
 # Mise (runtime version manager)
 link "mise/config.toml" "$HOME/.config/mise/config.toml"
 
+# Ghostty
+link "ghostty/config" "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+
 # iTerm2 — copy, not symlink (cfprefsd atomic writes break symlinks)
 if [ ! -f "$HOME/Library/Preferences/com.googlecode.iterm2.plist" ]; then
     cp "$DOTFILES/iterm2/com.googlecode.iterm2.plist" "$HOME/Library/Preferences/com.googlecode.iterm2.plist"

@@ -1,0 +1,21 @@
+# ported from iTerm2 profile "Default"
+theme = Dracula
+background = #000000
+font-family = FiraMono Nerd Font Mono
+font-size = 12
+cursor-style-blink = false
+window-width = 80
+window-height = 25
+
+# matches iTerm's QuitWhenAllWindowsClosed
+quit-after-last-window-closed = true
+
+# restore windows/tabs across restarts
+window-save-state = always
+
+# alt+left/right word-jump in zsh. iTerm had this OFF ("Option Key Sends: Normal"),
+# so uncomment only if you want the behavior change.
+# macos-option-as-alt = true
+
+# match iTerm2 thin strokes (native blending fattens light-on-dark text)
+alpha-blending = linear
