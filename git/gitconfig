@@ -47,7 +47,7 @@
 [core]
 	excludesfile = ~/.gitignore_global
 	autocrlf = input
-	fsmonitor = true
+	fsmonitor = false
 	untrackedcache = true
 	sshCommand = /usr/bin/ssh
 	# Speed up commands involving untracked files such as `git status`.
@@ -79,7 +79,7 @@
 	showuntrackedfiles = all
 [user]
 	name = Martin Oehlert
-	email = martin.oehlert@maibornwolff.de
+	email = mo1987@gmx.net
 	signingKey = 49F510F5E2C5E8C6
 [worktree]
 	guessRemote = true
@@ -90,14 +90,19 @@
 	path = ~/.gitconfig-github
 [credential "https://repository.toolchain.tkelevator.com"]
 	provider = bitbucket
-[credential]
-	helper =
-	helper = /usr/local/share/gcm-core/git-credential-manager
-[credential "https://dev.azure.com"]
-	useHttpPath = true
 [credential "https://github.com"]
 	helper =
 	helper = !/opt/homebrew/bin/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper =
 	helper = !/opt/homebrew/bin/gh auth git-credential
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[credential]
+	helper =
+	helper = /usr/local/share/gcm-core/git-credential-manager
+[credential "https://dev.azure.com"]
+	useHttpPath = true
