@@ -75,8 +75,6 @@
 	default = current  # Explicit default push behavior
 [rebase]
 	autoStash = true
-[status]
-	showuntrackedfiles = all
 [user]
 	name = Martin Oehlert
 	email = mo1987@gmx.net
