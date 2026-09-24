@@ -7,7 +7,7 @@ for conf in ~/.zshrc.d/*.zsh; do
   source "$conf"
 done
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+[[ $TERM_PROGRAM == iTerm.app ]] && test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # >>> dotnet-mise-migrate >>>

@@ -14,4 +14,5 @@ export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 
 # Mise — shims for non-interactive sessions (scripts, IDEs, cron)
-eval "$(mise activate zsh --shims)"
+# static equivalent of `mise activate zsh --shims`, saves an exec per login shell
+export PATH="$HOME/.local/share/mise/shims:$PATH"

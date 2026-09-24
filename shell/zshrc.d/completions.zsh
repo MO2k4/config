@@ -2,28 +2,53 @@
 ZSH_COMP_CACHE="$HOME/.zsh-completion-cache"
 [[ -d "$ZSH_COMP_CACHE" ]] || mkdir -p -m 700 "$ZSH_COMP_CACHE"
 
+# Write generator output ($2...) to a cache file ($1). Regenerates when the
+# generator's resolved binary path changes (brew upgrades land in a new
+# versioned Cellar dir), or after 7 days for tools whose path never changes
+# (mise shims, go/bin, npm globals). ctime is useless as an upgrade signal:
+# something bumps it across the whole Cellar.
+# Refreshes run in the background so the prompt never waits on cold generators
+# (trivy/minikube/k9s take >1s each). Temp and signature files are dotfiles so
+# compinit ignores them in fpath, and named after the cache file because
+# _cache_fpath and _cache_source can share a name (mise).
+# Delete ~/.zsh-completion-cache to force a synchronous rebuild.
+_cache_refresh() {
+  local cache_file="$1"; shift
+  local sig_file="$ZSH_COMP_CACHE/.sig.${cache_file:t}" bin="${commands[$1]:A}" old_sig
+  if [[ ! -f "$cache_file" ]]; then
+    "$@" > "$cache_file" 2>/dev/null
+    [[ "$cache_file" == *.zsh ]] && zcompile "$cache_file" 2>/dev/null
+    print -r -- "$bin" > "$sig_file"
+    return
+  fi
+  [[ -f "$sig_file" ]] && read -r old_sig < "$sig_file"
+  local -a expired=($cache_file(N.mh+168))
+  [[ "$old_sig" == "$bin" ]] && (( ! $#expired )) && return
+  local tmp="$ZSH_COMP_CACHE/.tmp.${cache_file:t}.$$"
+  {
+    if "$@" > "$tmp" 2>/dev/null && [[ -s "$tmp" ]]; then
+      mv -f "$tmp" "$cache_file"
+      [[ "$cache_file" == *.zsh ]] && zcompile "$cache_file" 2>/dev/null
+    else
+      # keep the old cache and don't retry on every shell until the next upgrade/expiry
+      rm -f "$tmp"; touch "$cache_file"
+    fi
+    print -r -- "$bin" > "$sig_file"
+  } &!
+}
+
 # Cache a completion script into fpath (NOT sourced — compinit loads lazily on first TAB).
-# Regenerates after 24h. Delete ~/.zsh-completion-cache to force refresh.
 _cache_fpath() {
   local name="$1"; shift
-  local cache_file="$ZSH_COMP_CACHE/_$name"
-  local -a stale=($cache_file(N.mh+24))
-  if [[ ! -f "$cache_file" ]] || (( $#stale )); then
-    "$@" > "$cache_file" 2>/dev/null
-  fi
+  _cache_refresh "$ZSH_COMP_CACHE/_$name" "$@"
 }
 
 # Cache and source a shell init script (for plugins that must run at startup).
 # Uses zcompile for faster sourcing.
 _cache_source() {
   local name="$1"; shift
-  local cache_file="$ZSH_COMP_CACHE/$name.zsh"
-  local -a stale=($cache_file(N.mh+24))
-  if [[ ! -f "$cache_file" ]] || (( $#stale )); then
-    "$@" > "$cache_file" 2>/dev/null
-    zcompile "$cache_file" 2>/dev/null
-  fi
-  source "$cache_file"
+  _cache_refresh "$ZSH_COMP_CACHE/$name.zsh" "$@"
+  source "$ZSH_COMP_CACHE/$name.zsh"
 }
 
 # Generate completion caches (placed in fpath, loaded lazily by compinit)
@@ -49,6 +74,9 @@ autoload -Uz compinit
 local -a zcompdump_stale=(~/.zcompdump(N.mh+24))
 if (( $#zcompdump_stale )); then
   compinit
+  # compinit only rewrites the dump when the fpath file count changes, so bump
+  # the mtime ourselves or the 24h check stays true forever.
+  touch ~/.zcompdump
 else
   compinit -C
 fi
