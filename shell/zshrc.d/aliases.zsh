@@ -39,6 +39,13 @@ priv() {
   fi
 }
 
+# dotnet-install overwrites the shared dotnet host in place; macOS keeps the old
+# code signature cached for that inode and SIGKILLs it (exit 137). A fresh inode fixes it.
+_dotnet_rehost() {
+  local host="$HOME/.local/share/mise/dotnet-root/dotnet"
+  [[ -f "$host" ]] && cp -p "$host" "$host.new" && mv -f "$host.new" "$host"
+}
+
 unalias up 2>/dev/null
 up() {
   local elevated=0
@@ -46,7 +53,8 @@ up() {
     PrivilegesCLI --add || return 1
     elevated=1
   fi
-  mise up && mise prune && brew update && brew upgrade && brew cleanup
+  # a killed dotnet host fails `mise up` mid-way; rehost, then let `mise install` finish the rest
+  mise up; _dotnet_rehost; mise install && mise prune && brew update && brew upgrade && brew cleanup
   local exit_code=$?
   (( elevated )) && PrivilegesCLI --remove
   return $exit_code
