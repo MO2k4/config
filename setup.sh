@@ -39,6 +39,9 @@ link "vim/vimrc" "$HOME/.vimrc"
 # Mise (runtime version manager)
 link "mise/config.toml" "$HOME/.config/mise/config.toml"
 
+# XQuartz (sourced on X server start by /opt/X11/etc/X11/xinit/xinitrc.d/98-user.sh)
+link "x11/xinitrc.d" "$HOME/.xinitrc.d"
+
 # Ghostty
 link "ghostty/config" "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
 
