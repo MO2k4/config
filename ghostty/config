@@ -20,6 +20,9 @@ window-save-state = always
 # match iTerm2 thin strokes (native blending fattens light-on-dark text)
 alpha-blending = linear
 
+# thicker box-drawing lines so herdr's active pane border stands out
+adjust-box-thickness = 2
+
 # skip the default /usr/bin/login -> bash -> zsh chain; each exec pays a Cisco
 # Secure Endpoint scan when its cache is cold
 command = /bin/zsh -l
