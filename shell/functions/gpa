@@ -12,71 +12,95 @@ gpa() {
     shift
   done
 
-  local root="${1:-.}"
+  # no_monitor: silence per-job "[1] 1234" / "done" notices in interactive shells.
+  setopt local_options no_monitor
+
+  # Reuse one SSH connection per host; each fresh GitHub handshake costs ~1.6s.
+  # GitHub caps a multiplexed connection at 10 sessions, hence the default of 8.
+  [[ -z $GIT_SSH_COMMAND ]] &&
+    local -x GIT_SSH_COMMAND="ssh -o ControlMaster=auto -o ControlPath=$HOME/.ssh/cm-%C -o ControlPersist=30"
+
+  local root="${1:-.}" max=${GPA_JOBS:-8}
   local updated=0 uptodate=0 skipped=0 failed=0
+  local tmp dir name sem st line f
+  local dirty cur def before after pullrc n note
+  tmp=$(mktemp -d) || return 1
+  mkdir "$tmp/out"
+
+  # FIFO semaphore: each worker takes a token and returns it when done, so at
+  # most $max repos are in flight without polling.
+  mkfifo "$tmp/sem"
+  exec {sem}<>"$tmp/sem"
+  repeat $max print >&$sem
 
   for dir in "$root"/*/(N); do
-    git -C "$dir" rev-parse --git-dir &>/dev/null || continue
-    local name=${${dir%/}:t}
+    [[ -e $dir/.git ]] || continue
+    name=${${dir%/}:t}
+    read -u $sem
+    (
+      trap 'print >&$sem' EXIT  # always return the token, even on early exit
+      out="$tmp/out/$name"
+      emit() { print -r -- "$1	$2" > "$out"; }
 
-    # 1. Dirty working tree: skip unless --autostash lets us stash around it.
-    local dirty=0
-    if [[ -n "$(git -C "$dir" status --porcelain)" ]]; then
-      if (( ! autostash )); then
-        print -r -- "⊘ $name  skipped (uncommitted changes)"
-        ((skipped++)); continue
+      # 1. Dirty working tree: skip unless --autostash lets us stash around it.
+      dirty=0
+      if [[ -n "$(git -C "$dir" status --porcelain)" ]]; then
+        if (( ! autostash )); then
+          emit skipped "⊘ $name  skipped (uncommitted changes)"; exit
+        fi
+        dirty=1
       fi
-      dirty=1
-    fi
 
-    # 2. Determine current and default branch (offline-first)
-    local cur def
-    cur=$(git -C "$dir" symbolic-ref --short HEAD 2>/dev/null)
-    def=$(git -C "$dir" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)
-    def=${def#origin/}
-    if [[ -z "$def" ]]; then
-      def=$(git -C "$dir" remote show origin 2>/dev/null | awk '/HEAD branch/{print $NF}')
-    fi
+      # 2. Determine current and default branch (offline-first)
+      cur=$(git -C "$dir" symbolic-ref --short HEAD 2>/dev/null)
+      def=$(git -C "$dir" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)
+      def=${def#origin/}
+      if [[ -z "$def" ]]; then
+        def=$(git -C "$dir" ls-remote --symref origin HEAD 2>/dev/null | awk '/^ref:/{sub("refs/heads/","",$2); print $2}')
+      fi
 
-    # Skip repos not on their default branch
-    if [[ -n "$def" && "$cur" != "$def" ]]; then
-      print -r -- "⊘ $name  skipped (on $cur, not $def)"
-      ((skipped++)); continue
-    fi
+      # Skip repos not on their default branch
+      if [[ -n "$def" && "$cur" != "$def" ]]; then
+        emit skipped "⊘ $name  skipped (on $cur, not $def)"; exit
+      fi
 
-    # 3. On default branch -> rebase-pull quietly (auto-stashing if dirty).
-    local before after pullrc
-    before=$(git -C "$dir" rev-parse HEAD)
-    if (( dirty )); then
-      git -C "$dir" pull --rebase --autostash --quiet 2>/dev/null
-    else
-      git -C "$dir" pull --rebase --quiet 2>/dev/null
-    fi
-    pullrc=$?
+      # 3. On default branch -> rebase-pull quietly (auto-stashing if dirty).
+      before=$(git -C "$dir" rev-parse HEAD)
+      if (( dirty )); then
+        git -C "$dir" pull --rebase --autostash --quiet 2>/dev/null
+      else
+        git -C "$dir" pull --rebase --quiet 2>/dev/null
+      fi
+      pullrc=$?
 
-    # An autostash (or rebase) that can't reapply cleanly leaves unmerged paths
-    # behind. Surface it loudly rather than reporting a misleading success.
-    if [[ -n "$(git -C "$dir" ls-files --unmerged)" ]]; then
-      print -r -- "✗ $name  autostash conflict — resolve manually"
-      ((failed++)); continue
-    fi
-    if (( pullrc != 0 )); then
-      print -r -- "✗ $name  pull failed"
-      ((failed++)); continue
-    fi
-
-    after=$(git -C "$dir" rev-parse HEAD)
-    if [[ "$before" == "$after" ]]; then
-      print -r -- "= $name  up to date"
-      ((uptodate++))
-    else
-      local n=$(git -C "$dir" rev-list --count "$before..$after")
-      local note=""
-      (( dirty )) && note="  (local changes preserved)"
-      print -r -- "✓ $name  $n new commit(s)$note"
-      ((updated++))
-    fi
+      # An autostash (or rebase) that can't reapply cleanly leaves unmerged paths
+      # behind. Surface it loudly rather than reporting a misleading success.
+      if [[ -n "$(git -C "$dir" ls-files --unmerged)" ]]; then
+        emit failed "✗ $name  autostash conflict — resolve manually"
+      elif (( pullrc != 0 )); then
+        emit failed "✗ $name  pull failed"
+      else
+        after=$(git -C "$dir" rev-parse HEAD)
+        if [[ "$before" == "$after" ]]; then
+          emit uptodate "= $name  up to date"
+        else
+          n=$(git -C "$dir" rev-list --count "$before..$after")
+          note=""
+          (( dirty )) && note="  (local changes preserved)"
+          emit updated "✓ $name  $n new commit(s)$note"
+        fi
+      fi
+    ) &
   done
+  wait
+  exec {sem}>&-
+
+  for f in "$tmp"/out/*(N); do
+    IFS=$'\t' read -r st line < "$f"
+    print -r -- "$line"
+    (( $st++ ))
+  done
+  rm -rf "$tmp"
 
   print -r -- "— $updated updated, $uptodate up-to-date, $skipped skipped, $failed failed"
 }
