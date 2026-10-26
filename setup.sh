@@ -32,6 +32,7 @@ link "shell/functions" "$HOME/.zsh-functions"
 # Git
 link "git/gitconfig" "$HOME/.gitconfig"
 link "git/gitconfig-github" "$HOME/.gitconfig-github"
+link "git/gitignore_global" "$HOME/.gitignore_global"
 # global hooks: gitconfig sets core.hooksPath = ~/.githooks; husky repos bridge back via init.sh
 link "githooks" "$HOME/.githooks"
 link "husky/init.sh" "$HOME/.config/husky/init.sh"
@@ -47,6 +48,18 @@ link "x11/xinitrc.d" "$HOME/.xinitrc.d"
 
 # Ghostty
 link "ghostty/config" "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+
+# Herdr
+link "herdr/config.toml" "$HOME/.config/herdr/config.toml"
+
+# GitHub CLI (hosts.yml holds the token and stays untracked)
+link "gh/config.yml" "$HOME/.config/gh/config.yml"
+
+# Claude Code
+link "claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+for hook in claude/hooks/*; do
+    link "$hook" "$HOME/.claude/hooks/$(basename "$hook")"
+done
 
 # iTerm2 — copy, not symlink (cfprefsd atomic writes break symlinks)
 if [ ! -f "$HOME/Library/Preferences/com.googlecode.iterm2.plist" ]; then

@@ -1,0 +1,22 @@
+onboarding = false
+[ui.toast]
+delivery = "system"
+
+[ui]
+status_indicators = "symbols"
+show_agent_labels_on_pane_borders = true
+agent_panel_sort = "spaces"
+
+[theme]
+name = "dracula"
+
+# Ghostty forces background = #000000; the theme's greys are tuned for #282a36 and vanish on black.
+[theme.custom]
+overlay0 = "#9aa3c7"
+overlay1 = "#b4bbd9"
+subtext0 = "#d0d4e8"
+# Dracula yellow #f1fa8c reads as green next to #50fa7b.
+yellow = "#ffb86c"
+green = "#50fa7b"
+# Active pane border; Dracula purple #bd93f9 is too dim on black.
+accent = "#ff79c6"

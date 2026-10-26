@@ -21,7 +21,9 @@ A symlink-based dotfiles repository for macOS/zsh. Files are stored without dot 
 setup.sh          → Idempotent symlink installer (bash, ln -sf)
 Brewfile          → Homebrew packages (brews, casks, vscode extensions, go/cargo)
 shell/            → zshrc, zshenv, zprofile, bashrc   →  ~/.<file>
-git/              → gitconfig                         →  ~/.<file>
+git/              → gitconfig, gitignore_global       →  ~/.<file>
+gh/               → config.yml                        →  ~/.config/gh/config.yml
+claude/           → CLAUDE.md, hooks/*                →  ~/.claude/ (settings.json not tracked: holds per-repo autoMode)
 githooks/         → global hook dispatcher + drop-ins →  ~/.githooks (core.hooksPath; DCO sign-off)
 husky/            → init.sh                           →  ~/.config/husky/init.sh (husky repos → ~/.githooks)
 vim/              → vimrc                             →  ~/.<file>
@@ -29,6 +31,7 @@ iterm2/           → com.googlecode.iterm2.plist       →  ~/Library/Preferenc
 mise/             → config.toml                       →  ~/.config/mise/config.toml
 x11/              → xinitrc.d/                        →  ~/.xinitrc.d (XQuartz runs *.sh on start)
 ghostty/          → config                            →  ~/Library/Application Support/com.mitchellh.ghostty/config
+herdr/            → config.toml                       →  ~/.config/herdr/config.toml
 prompt/           → Oh-my-posh themes, az.completion  →  ~/<file> or ~/.<dir>/<file>
 ```
 
