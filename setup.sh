@@ -65,6 +65,11 @@ if [ "${1:-}" = "--brew" ]; then
         /bin/bash "$tmpfile"
         rm -f "$tmpfile"
     fi
+    # Same elevation as up() in shell/zshrc.d/aliases.zsh
+    if ! id -Gn | grep -q '\badmin\b'; then
+        PrivilegesCLI --add
+        trap 'PrivilegesCLI --remove' EXIT
+    fi
     # Some casks run pkg installers that prompt for sudo mid-run; ask up front instead
     echo "Some casks need admin rights, asking for your password now..."
     sudo -v
