@@ -4,6 +4,8 @@ go = "1.27"
 python = "3.15"
 dotnet = ["10.0.403", "10.0.303", "10.0.204", "10.0.114", "9.0.320", "8.0.427"]
 bun = "1.4.4"
+rust = "stable"
+"cargo:https://github.com/loichyan/nerdfix" = "tag:v0.4.2" # not on crates.io
 
 [settings]
 idiomatic_version_file = true
