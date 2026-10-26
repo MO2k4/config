@@ -11,6 +11,8 @@ fi
 
 echo "Updating Brewfile..."
 brew bundle dump --file="$BREWFILE" --force
+# mise owns go, node and rust; dump would list their binaries as packages
+sed -i '' -E '/^(go|npm|cargo) /d' "$BREWFILE"
 
 if git -C "$DOTFILES" diff --quiet "$BREWFILE" 2>/dev/null; then
     echo "Brewfile is already up to date."
