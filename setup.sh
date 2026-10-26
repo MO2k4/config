@@ -66,7 +66,7 @@ if [ "${1:-}" = "--brew" ]; then
         rm -f "$tmpfile"
     fi
     echo "Installing Homebrew packages..."
-    brew bundle --file="$DOTFILES/Brewfile" --no-lock
+    brew bundle --file="$DOTFILES/Brewfile"
 fi
 
 echo "Done."

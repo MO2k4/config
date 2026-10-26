@@ -10,6 +10,7 @@ A symlink-based dotfiles repository for macOS/zsh. Files are stored without dot 
 
 - `./setup.sh` — Create symlinks (idempotent, safe to re-run)
 - `./setup.sh --brew` — Also install Homebrew packages from `Brewfile`
+- `./macos.sh` — Apply macOS settings (Dock, Finder, appearance, screenshots); re-run safe
 - `brew bundle dump --file=Brewfile --force` — Regenerate Brewfile from currently installed packages
 
 ## Architecture
