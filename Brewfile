@@ -1,6 +1,7 @@
 tap "azure/functions", trusted: true
 tap "blendle/blendle"
 tap "dapr/tap", trusted: true
+tap "facebook/fb"
 tap "goodwithtech/r"
 tap "hashicorp/tap"
 tap "iqneoxen/aictx", "https://github.com/IQNeoXen/homebrew-aictx", trusted: true
@@ -8,6 +9,7 @@ tap "isen-ng/dotnet-sdk-versions", trusted: true
 tap "jandedobbeleer/oh-my-posh"
 tap "microsoft/mssql-release", "https://github.com/Microsoft/homebrew-mssql-release", trusted: { formulae: ["msodbcsql18"] }
 tap "mike-engel/jwt-cli"
+tap "mobai-app/tap"
 tap "mongodb/brew"
 tap "stackitcloud/tap", trusted: true
 tap "thoughtbot/formulae"
@@ -141,6 +143,8 @@ brew "pandoc"
 brew "pipx"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
+# Command-line shell and scripting language
+brew "powershell"
 # Framework for managing multi-language pre-commit hooks
 brew "pre-commit"
 # Monitor data's progress through a pipe
@@ -169,6 +173,8 @@ brew "tokei"
 brew "tree"
 # Vulnerability scanner for container images, file systems, and Git repos
 brew "trivy"
+# Find and verify credentials
+brew "trufflehog"
 # Vi 'workalike' with many additional features
 brew "vim"
 # Tool for managing your YubiKey configuration
@@ -189,6 +195,8 @@ brew "azure/functions/azure-functions-core-tools@4", trusted: true
 brew "blendle/blendle/kns", trusted: true
 # Client for Dapr.
 brew "dapr/tap/dapr-cli", trusted: true
+# Companion server for automating iOS Simulators
+brew "facebook/fb/idb-companion", trusted: true
 # Simple security auditing, helping build the Best Docker Images
 brew "goodwithtech/r/dockle", trusted: true
 # Packer
@@ -201,6 +209,8 @@ brew "jandedobbeleer/oh-my-posh/oh-my-posh", trusted: true
 brew "microsoft/mssql-release/mssql-tools18", trusted: true
 # Super fast CLI tool to decode and encode JWTs built in Rust
 brew "mike-engel/jwt-cli/jwt-cli", trusted: true
+# Run more iOS, tvOS, watchOS, and visionOS simulators on one Mac by disabling unneeded background daemons
+brew "mobai-app/tap/simslim", trusted: true
 # This package contains standard utilities for interacting with MongoDB.
 brew "mongodb/brew/mongodb-database-tools", trusted: true
 # Identify complex code
@@ -383,8 +393,3 @@ vscode "yzhang.markdown-all-in-one"
 vscode "zignd.html-css-class-completion"
 cargo "elfloader"
 cargo "nerdfix", source: "https://github.com/loichyan/nerdfix.git"
-npm "@colbymchenry/codegraph"
-npm "@github/copilot"
-npm "@mw-ai/sandbox"
-npm "excalidraw-cli"
-npm "jscpd"
