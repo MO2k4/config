@@ -69,7 +69,9 @@ if [ "${1:-}" = "--brew" ]; then
     echo "Some casks need admin rights, asking for your password now..."
     sudo -v
     echo "Installing Homebrew packages ($(grep -cE '^[a-z]+ "' "$DOTFILES/Brewfile") entries)..."
-    brew bundle --verbose --file="$DOTFILES/Brewfile"
+    # msodbcsql18/mssql-tools18 otherwise stop for an interactive EULA prompt buried in the output
+    echo "Accepting the Microsoft ODBC/mssql-tools EULA: https://aka.ms/odbc18eula"
+    HOMEBREW_ACCEPT_EULA=Y brew bundle --verbose --file="$DOTFILES/Brewfile"
 fi
 
 echo "Done."
