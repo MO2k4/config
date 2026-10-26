@@ -3,6 +3,7 @@ node = "26"
 go = "1.27"
 python = "3.14"
 dotnet = ["10.0.401", "10.0.303", "10.0.204", "10.0.112", "9.0.318", "8.0.425"]
+bun = "1.4.2"
 
 [settings]
 idiomatic_version_file = true
