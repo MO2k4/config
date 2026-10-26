@@ -11,5 +11,6 @@ rust = "stable"
 idiomatic_version_file = true
 trusted_config_paths = [
   "/Users/martino/Work/client/core-app",
+  "/Users/martin.oehlert/Work/client/core-app",
   "/Users/martino/Work/client/poc-app",
 ]
