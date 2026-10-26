@@ -11,6 +11,7 @@ A symlink-based dotfiles repository for macOS/zsh. Files are stored without dot 
 - `./setup.sh` — Create symlinks (idempotent, safe to re-run)
 - `./setup.sh --brew` — Also install Homebrew packages from `Brewfile`
 - `./macos.sh` — Apply macOS settings (Dock, Finder, appearance, screenshots); re-run safe
+- `./clone-org.sh [org] [dir]` — Clone every non-archived repo of a GitHub org that is missing locally (default `ais-schule` into `~/Work/ais`)
 - `brew bundle dump --file=Brewfile --force` — Regenerate Brewfile from currently installed packages
 
 ## Architecture
@@ -20,6 +21,8 @@ setup.sh          → Idempotent symlink installer (bash, ln -sf)
 Brewfile          → Homebrew packages (brews, casks, vscode extensions, go/cargo)
 shell/            → zshrc, zshenv, zprofile, bashrc   →  ~/.<file>
 git/              → gitconfig                         →  ~/.<file>
+githooks/         → global hook dispatcher + drop-ins →  ~/.githooks (core.hooksPath; DCO sign-off)
+husky/            → init.sh                           →  ~/.config/husky/init.sh (husky repos → ~/.githooks)
 vim/              → vimrc                             →  ~/.<file>
 iterm2/           → com.googlecode.iterm2.plist       →  ~/Library/Preferences/ (copied, not symlinked)
 mise/             → config.toml                       →  ~/.config/mise/config.toml

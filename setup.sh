@@ -32,6 +32,9 @@ link "shell/functions" "$HOME/.zsh-functions"
 # Git
 link "git/gitconfig" "$HOME/.gitconfig"
 link "git/gitconfig-github" "$HOME/.gitconfig-github"
+# global hooks: gitconfig sets core.hooksPath = ~/.githooks; husky repos bridge back via init.sh
+link "githooks" "$HOME/.githooks"
+link "husky/init.sh" "$HOME/.config/husky/init.sh"
 
 # Vim
 link "vim/vimrc" "$HOME/.vimrc"

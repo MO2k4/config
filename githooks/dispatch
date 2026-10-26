@@ -1,0 +1,40 @@
+#!/bin/sh
+# Global git hooks dispatcher (core.hooksPath = ~/.githooks).
+#
+# Every hook name in this directory is a symlink to this file. For hook <name>:
+#   1. Run drop-ins from ~/.githooks/<name>.d/* (sorted, executable only).
+#   2. Delegate to the repo's own hook at $GIT_COMMON_DIR/hooks/<name> —
+#      where `pre-commit install` and friends write — so the global
+#      hooksPath never shadows repo-managed hooks.
+#
+# Husky repos override core.hooksPath locally with .husky/_; there,
+# ~/.config/husky/init.sh bridges back into this dispatcher with
+# GITHOOKS_SKIP_REPO_DELEGATE=1 (husky already owns the repo layer).
+#
+# Per-repo opt-out of the global drop-ins: git config hooks.skipGlobal true
+#
+# Caveat: drop-ins for stdin-consuming hooks (pre-push, post-rewrite) must
+# not read stdin, or the delegated repo hook would see an empty ref list.
+
+hook_name=$(basename "$0")
+hooks_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+if [ "$(git config --bool --get hooks.skipGlobal 2>/dev/null)" != "true" ] \
+  && [ -d "$hooks_dir/$hook_name.d" ]; then
+  for dropin in "$hooks_dir/$hook_name.d"/*; do
+    [ -x "$dropin" ] || continue
+    "$dropin" "$@" || exit $?
+  done
+fi
+
+[ -n "${GITHOOKS_SKIP_REPO_DELEGATE:-}" ] && exit 0
+
+# --git-common-dir (not --git-path hooks) deliberately: --git-path honors
+# core.hooksPath and would point straight back at this dispatcher. The
+# common dir also makes this correct inside git worktrees.
+common_dir=$(git rev-parse --git-common-dir 2>/dev/null) || exit 0
+repo_hook="$common_dir/hooks/$hook_name"
+if [ -x "$repo_hook" ]; then
+  exec "$repo_hook" "$@"
+fi
+exit 0
