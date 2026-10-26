@@ -65,8 +65,11 @@ if [ "${1:-}" = "--brew" ]; then
         /bin/bash "$tmpfile"
         rm -f "$tmpfile"
     fi
-    echo "Installing Homebrew packages..."
-    brew bundle --file="$DOTFILES/Brewfile"
+    # Some casks run pkg installers that prompt for sudo mid-run; ask up front instead
+    echo "Some casks need admin rights, asking for your password now..."
+    sudo -v
+    echo "Installing Homebrew packages ($(grep -cE '^[a-z]+ "' "$DOTFILES/Brewfile") entries)..."
+    brew bundle --verbose --file="$DOTFILES/Brewfile"
 fi
 
 echo "Done."
