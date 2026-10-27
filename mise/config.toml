@@ -11,5 +11,4 @@ rust = "stable"
 idiomatic_version_file = true
 trusted_config_paths = [
   "~/Work/ais/ais-core",
-  "~/Work/ais/poc-app",
 ]
