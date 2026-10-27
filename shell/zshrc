@@ -10,6 +10,13 @@ done
 [[ $TERM_PROGRAM == iTerm.app ]] && test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
+# herdr has no plugin event for cd/git switch, so relabel the pane after each prompt (mo2k4.branch-label)
+if [[ -n $HERDR_PANE_ID ]]; then
+  _branch_label_bin=$(herdr plugin config-dir mo2k4.branch-label)/branch-label
+  _branch_label() { "$_branch_label_bin" event &>/dev/null &! }
+  precmd_functions+=(_branch_label)
+fi
+
 # >>> dotnet-mise-migrate >>>
 # GUI apps (VS Code from the Dock, etc.) don't inherit the mise shim PATH,
 # and /etc/paths.d/dotnet is gone, so point them at the mise root directly.
