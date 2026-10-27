@@ -10,7 +10,6 @@ rust = "stable"
 [settings]
 idiomatic_version_file = true
 trusted_config_paths = [
-  "/Users/martino/Work/ais/ais-core",
-  "/Users/martin.oehlert/Work/ais/ais-core",
-  "/Users/martino/Work/ais/poc-app",
+  "~/Work/ais/ais-core",
+  "~/Work/ais/poc-app",
 ]
