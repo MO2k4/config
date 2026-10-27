@@ -8,7 +8,7 @@ rust = "stable"
 "cargo:https://github.com/loichyan/nerdfix" = "tag:v0.4.2" # not on crates.io
 
 [settings]
-idiomatic_version_file = true
+idiomatic_version_file_enable_tools = ["node"]
 trusted_config_paths = [
-  "~/Work/ais/ais-core",
+  "~/Work/ais",
 ]
