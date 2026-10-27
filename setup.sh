@@ -95,4 +95,13 @@ if [ "${1:-}" = "--brew" ]; then
     HOMEBREW_ACCEPT_EULA=Y brew bundle --verbose --file="$DOTFILES/Brewfile"
 fi
 
+# Zoxide: seed with every repo under ~/Work. Only unknown paths, since re-adding bumps their rank.
+# One zoxide call: parallel `fd -x zoxide add` runs clobber each other's database writes.
+if command -v zoxide &>/dev/null && command -v fd &>/dev/null && [ -d "$HOME/Work" ]; then
+    fd -HI -t d -g .git "$HOME/Work" --prune -x echo {//} \
+        | { grep -vxFf <(zoxide query -l) || true; } \
+        | xargs zoxide add
+    echo "Seeded zoxide with repos under ~/Work"
+fi
+
 echo "Done."
