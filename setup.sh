@@ -60,6 +60,9 @@ link "claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 for hook in claude/hooks/*; do
     link "$hook" "$HOME/.claude/hooks/$(basename "$hook")"
 done
+for script in claude/statusline/*.sh; do
+    link "$script" "$HOME/.claude/statusline/$(basename "$script")"
+done
 
 # iTerm2 — copy, not symlink (cfprefsd atomic writes break symlinks)
 if [ ! -f "$HOME/Library/Preferences/com.googlecode.iterm2.plist" ]; then
