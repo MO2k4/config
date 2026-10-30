@@ -23,7 +23,7 @@ Brewfile          → Homebrew packages (brews, casks, vscode extensions, go/car
 shell/            → zshrc, zshenv, zprofile, bashrc   →  ~/.<file>
 git/              → gitconfig, gitignore_global       →  ~/.<file>
 gh/               → config.yml                        →  ~/.config/gh/config.yml
-claude/           → CLAUDE.md, hooks/*                →  ~/.claude/ (settings.json not tracked: holds per-repo autoMode)
+claude/           → CLAUDE.md, hooks/*, statusline/*.sh →  ~/.claude/ (settings.json not tracked: holds per-repo autoMode)
 githooks/         → global hook dispatcher + drop-ins →  ~/.githooks (core.hooksPath; DCO sign-off)
 husky/            → init.sh                           →  ~/.config/husky/init.sh (husky repos → ~/.githooks)
 vim/              → vimrc                             →  ~/.<file>
