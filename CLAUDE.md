@@ -32,7 +32,7 @@ mise/             → config.toml                       →  ~/.config/mise/conf
 x11/              → xinitrc.d/                        →  ~/.xinitrc.d (XQuartz runs *.sh on start)
 ghostty/          → config                            →  ~/Library/Application Support/com.mitchellh.ghostty/config
 herdr/            → config.toml                       →  ~/.config/herdr/config.toml
-herdr-app/        → themes/dracula.json               →  ~/.config/herdr-app/themes/dracula.json
+herdr-app/        → settings.json, themes/dracula.json →  ~/.config/herdr-app/<file>
 prompt/           → Oh-my-posh themes, az.completion  →  ~/<file> or ~/.<dir>/<file>
 ```
 

@@ -51,6 +51,7 @@ link "ghostty/config" "$HOME/Library/Application Support/com.mitchellh.ghostty/c
 
 # Herdr
 link "herdr/config.toml" "$HOME/.config/herdr/config.toml"
+link "herdr-app/settings.json" "$HOME/.config/herdr-app/settings.json"
 link "herdr-app/themes/dracula.json" "$HOME/.config/herdr-app/themes/dracula.json"
 
 # GitHub CLI (hosts.yml holds the token and stays untracked)

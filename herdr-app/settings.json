@@ -1,0 +1,10 @@
+{
+  "zoom": 1,
+  "sounds": {
+    "enabled": true
+  },
+  "minimum_contrast": 1,
+  "font": "FiraMono Nerd Font Mono",
+  "font_size": 12,
+  "theme": "dracula"
+}
