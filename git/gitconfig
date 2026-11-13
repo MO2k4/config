@@ -84,10 +84,11 @@
 
 [includeIf "gitdir:~/Work/github/"]
 	path = ~/.gitconfig-github
-[includeIf "gitdir:~/Work/client/"]
+# Any repo with a GitHub remote commits with the noreply identity, wherever it lives.
+[includeIf "hasconfig:remote.*.url:https://github.com/**"]
 	path = ~/.gitconfig-github
-[credential "https://git.example.com"]
-	provider = bitbucket
+[includeIf "hasconfig:remote.*.url:git@github.com:*/**"]
+	path = ~/.gitconfig-github
 [credential "https://github.com"]
 	helper =
 	helper = !/opt/homebrew/bin/gh auth git-credential
@@ -104,3 +105,7 @@
 	helper = /usr/local/share/gcm-core/git-credential-manager
 [credential "https://dev.azure.com"]
 	useHttpPath = true
+
+# Machine-specific settings (client hosts, credentials) that stay out of this public repo.
+[include]
+	path = ~/.gitconfig.local

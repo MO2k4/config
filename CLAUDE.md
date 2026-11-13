@@ -11,7 +11,7 @@ A symlink-based dotfiles repository for macOS/zsh. Files are stored without dot 
 - `./setup.sh` — Create symlinks (idempotent, safe to re-run)
 - `./setup.sh --brew` — Also install Homebrew packages from `Brewfile`
 - `./macos.sh` — Apply macOS settings (Dock, Finder, appearance, screenshots); re-run safe
-- `./clone-org.sh [org] [dir]` — Clone every non-archived repo of a GitHub org that is missing locally (default `my-org` into `~/Work/client`)
+- `./clone-org.sh <org> [dir]` — Clone every non-archived repo of a GitHub org that is missing locally (into `~/Work/<org>` unless `dir` is given)
 - `./skills.sh dump` / `./skills.sh install` — Snapshot global agent skills (`npx skills`) to `skills.txt` / reinstall them, plus link the own skills from `~/Work/github/claude-skills`
 - `brew bundle dump --file=Brewfile --force` — Regenerate Brewfile from currently installed packages
 

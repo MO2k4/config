@@ -1,11 +1,11 @@
 #!/bin/bash
 # Clones every non-archived repo of a GitHub org that is not checked out yet.
-#   ./clone-org.sh [org] [dir]    defaults: my-org ~/Work/client
+#   ./clone-org.sh <org> [dir]    dir defaults to ~/Work/<org>
 # Existing folders are left alone, so it is safe to re-run.
 set -euo pipefail
 
-ORG="${1:-my-org}"
-DIR="${2:-$HOME/Work/client}"
+ORG="${1:?usage: ./clone-org.sh <org> [dir]}"
+DIR="${2:-$HOME/Work/$ORG}"
 mkdir -p "$DIR"
 
 # shellcheck disable=SC2016 # the inner sh expands $1..$3

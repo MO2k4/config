@@ -1,9 +1,9 @@
 cosmos() {
-  local cs tmpf
+  local cs tmpf app="${COSMOS_APP:?set COSMOS_APP in ~/.zshrc.d/local.zsh}"
   cs="$(az cosmosdb keys list \
     --type connection-strings \
-    --resource-group "rg-app-$1" \
-    --name "cosmos-app-$1" \
+    --resource-group "rg-$app-$1" \
+    --name "cosmos-$app-$1" \
     --query "connectionStrings[?description=='Primary MongoDB Connection String'].connectionString" \
     -o tsv)&socketTimeoutMS=360000&connectTimeoutMS=360000"
 

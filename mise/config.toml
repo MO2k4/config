@@ -9,6 +9,3 @@ rust = "stable"
 
 [settings]
 idiomatic_version_file_enable_tools = ["node"]
-trusted_config_paths = [
-  "~/Work/client",
-]
