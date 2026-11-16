@@ -1,0 +1,12 @@
+#!/bin/sh
+# Git has no pre-worktree-add hook, so this can only flag a misplaced worktree
+# after `git worktree add` created it (old ref is all zeros on a fresh checkout).
+[ "$1" = 0000000000000000000000000000000000000000 ] || exit 0
+common=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || exit 0
+main=$(cd "$(dirname "$common")" && pwd -P)
+here=$(pwd -P)
+[ "$here" = "$main" ] && exit 0
+[ "$(dirname "$here")" = "$main/.claude/worktrees" ] && exit 0
+echo "error: worktree $here is outside $main/.claude/worktrees/" >&2
+echo "  fix: git -C $main worktree move $here $main/.claude/worktrees/$(basename "$here")" >&2
+exit 1

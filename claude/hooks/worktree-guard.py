@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PreToolUse(Bash) hook: block `git worktree add` targets outside the repo's working tree."""
+"""PreToolUse(Bash) hook: block `git worktree add` targets outside <main checkout>/.claude/worktrees/."""
 import json
 import os
 import shlex
@@ -57,12 +57,16 @@ def violations(cmd, cwd):
             continue
         git_dir, path = target
         base = os.path.join(cwd, os.path.expanduser(git_dir or "."))
-        top = subprocess.run(["git", "-C", base, "rev-parse", "--show-toplevel"],
-                             capture_output=True, text=True).stdout.strip()
-        if not top:
+        # The common dir's parent is the main checkout even when run inside a worktree,
+        # so worktrees never nest inside other worktrees.
+        common = subprocess.run(
+            ["git", "-C", base, "rev-parse", "--path-format=absolute", "--git-common-dir"],
+            capture_output=True, text=True).stdout.strip()
+        if not common:
             continue
+        top = os.path.dirname(os.path.realpath(common))
         dest = os.path.realpath(os.path.join(base, os.path.expanduser(path)))
-        if not dest.startswith(os.path.realpath(top) + os.sep):
+        if os.path.dirname(dest) != os.path.join(top, ".claude", "worktrees"):
             yield dest, top
 
 
@@ -76,7 +80,7 @@ def main():
     except ValueError:  # unparseable quoting; don't block on our own parse failure
         return 0
     for dest, top in bad:
-        print(f"Blocked: worktree {dest} is outside repo {top}. Use EnterWorktree, or "
+        print(f"Blocked: worktree {dest} is outside {top}/.claude/worktrees/. Use EnterWorktree, or "
               f"`git -C {top} worktree add .claude/worktrees/<name> ...`.", file=sys.stderr)
     return 2 if bad else 0
 
