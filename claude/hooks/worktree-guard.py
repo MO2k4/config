@@ -5,6 +5,7 @@ import os
 import shlex
 import subprocess
 import sys
+import tempfile
 
 SEPARATORS = {";", "&&", "||", "|", "&", "\n"}
 ADD_OPTS_WITH_VALUE = {"-b", "-B", "--reason"}
@@ -65,6 +66,9 @@ def violations(cmd, cwd):
         if not common:
             continue
         top = os.path.dirname(os.path.realpath(common))
+        if any(top.startswith(os.path.realpath(t) + os.sep)
+               for t in {tempfile.gettempdir(), "/tmp"}):
+            continue  # throwaway repos (test fixtures) may put worktrees anywhere
         dest = os.path.realpath(os.path.join(base, os.path.expanduser(path)))
         if os.path.dirname(dest) != os.path.join(top, ".claude", "worktrees"):
             yield dest, top
