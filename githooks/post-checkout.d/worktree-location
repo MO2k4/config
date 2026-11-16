@@ -11,6 +11,10 @@ for tmp in "${TMPDIR:-/tmp}" /tmp; do
   case "$main/" in "$tmp"/*) exit 0 ;; esac
 done
 here=$(pwd -P)
+# herd keeps its checkouts in one place of its own, often off bare mirrors that
+# have no main checkout to nest them under.
+herd=$(cd "${HERD_HOME:-${PR_HERD_HOME:-$HOME/.local/state/pr-herd}}/worktrees" 2>/dev/null && pwd -P)
+[ -n "$herd" ] && [ "$(dirname "$here")" = "$herd" ] && exit 0
 [ "$here" = "$main" ] && exit 0
 [ "$(dirname "$here")" = "$main/.claude/worktrees" ] && exit 0
 echo "error: worktree $here is outside $main/.claude/worktrees/" >&2
