@@ -39,6 +39,9 @@ gpa() {
     read -u $sem
     (
       trap 'print >&$sem' EXIT  # always return the token, even on early exit
+      # `exit` in an interactive shell's subshell saves history on the way out;
+      # parallel workers then race on $HISTFILE.new ("can't rename ... to $HISTFILE").
+      unset HISTFILE
       out="$tmp/out/$name"
       emit() { print -r -- "$1	$2" > "$out"; }
 
