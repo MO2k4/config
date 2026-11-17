@@ -19,3 +19,7 @@ export DISPLAY=:0
 
 # Aspire CLI
 export PATH="$HOME/.aspire/bin:$PATH"
+
+# herd hands these to its agents; ais-core init copies .env from here when the worktree came from herd's bare mirror
+export AIS_CORE_MAIN_CHECKOUT="$HOME/Work/ais/ais-core"
+export HERD_AGENT_ENV="AIS_CORE_MAIN_CHECKOUT"
