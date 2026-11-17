@@ -100,7 +100,7 @@ gpa() {
 
   for f in "$tmp"/out/*(N); do
     IFS=$'\t' read -r st line < "$f"
-    print -r -- "$line"
+    [[ $st == uptodate ]] || print -r -- "$line"
     (( $st++ ))
   done
   rm -rf "$tmp"
