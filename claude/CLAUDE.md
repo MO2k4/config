@@ -24,7 +24,14 @@ Do not over-comment. A comment must earn its line; the default is no comment.
 - **Public API docstrings are documentation, not comments** — keep them where the language's conventions expect them, and keep them short.
 - **Stale beats missing is false.** If a change makes a comment wrong, fix or delete it in the same diff.
 
+## Docs and PR bodies
+
+- A change that makes a README, AGENTS.md, runbook or chart note wrong fixes it in the same diff: grep the repo for the old name (client id, Secret, role, flag).
+- Before opening a PR, and again after each review round, check every claim in its title and body against the diff, especially "not in this PR", versions and counts.
+
 ## Subagents and scratch files
 
 - Subagents that fix code stop at the commit. The main session does `git push`, `gh pr create` and every other GitHub write. Keep spawn prompts self-contained: inline the steps instead of "follow <brief>.md exactly", and don't write "the user allowed X" into a prompt. The auto-mode classifier blocks such spawns.
 - Write logs and scratch files to the repo's gitignored `.local/`, not `/tmp`. context-mode refuses to read files outside the project.
+
+@RTK.md
